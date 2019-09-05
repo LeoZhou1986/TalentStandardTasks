@@ -111,8 +111,61 @@ namespace Talent.Services.Profile.Domain.Services
 
         public async Task<bool> UpdateTalentProfile(TalentProfileViewModel model, string updaterId)
         {
-            //Your code here;
-            throw new NotImplementedException();
+            try
+            {
+                User user = (await _userRepository.GetByIdAsync(model.Id));
+
+                user.LinkedAccounts = model.LinkedAccounts;
+
+                user.Summary = model.Summary;
+                user.Description = model.Description;
+
+                user.FirstName = model.FirstName;
+                user.MiddleName = model.MiddleName;
+                user.LastName = model.LastName;
+                user.Gender = model.Gender;
+                user.Email = model.Email;
+                user.Phone = model.Phone;
+                user.MobilePhone = model.MobilePhone;
+                user.IsMobilePhoneVerified = model.IsMobilePhoneVerified;
+
+                user.Address = model.Address;
+
+                user.Nationality = model.Nationality;
+
+                //user.Languages = model.Languages;
+
+                //user.Skills = model.Skills;
+
+                //user.Experience = model.Experience;
+
+                user.VisaStatus = model.VisaStatus;
+                user.VisaExpiryDate = model.VisaExpiryDate;
+
+                user.JobSeekingStatus = model.JobSeekingStatus;
+
+                user.ProfilePhoto = model.ProfilePhoto;
+                user.ProfilePhotoUrl = model.ProfilePhotoUrl;
+
+                /*
+                user.VideoName = model.VideoName;
+                user.CvName = model.CvName;
+                user.Education = model.Education;
+                user.Certifications = model.Certifications;
+                user.Location
+                user.Videos
+                */
+
+                user.UpdatedBy = updaterId;
+                user.UpdatedOn = DateTime.Now;
+
+                await _userRepository.Update(user);
+                return true;
+            }
+            catch (MongoException e)
+            {
+                return false;
+            }
         }
 
         public async Task<EmployerProfileViewModel> GetEmployerProfile(string Id, string role)
