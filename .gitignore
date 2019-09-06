@@ -17,3 +17,5 @@
 !*/
 !/Talent.Services.Profile/Domain/Services/ProfileService.cs
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Profile/SocialMediaLinkedAccount.jsx
+!/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Profile/Location.jsx
+!/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Profile/SelfIntroduction.jsx
