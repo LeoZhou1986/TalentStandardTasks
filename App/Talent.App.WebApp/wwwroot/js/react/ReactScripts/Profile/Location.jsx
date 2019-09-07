@@ -3,20 +3,63 @@ import Cookies from 'js-cookie'
 import { default as Countries } from '../../../../util/jsonFiles/countries.json';
 import { ChildSingleInput } from '../Form/SingleInput.jsx';
 import { Select } from '../Form/Select.jsx';
-import { Grid, Button, Icon, Popup } from 'semantic-ui-react';
+import { Grid, Button, Dropdown, Popup } from 'semantic-ui-react';
 
 export class Address extends React.Component {
     constructor(props) {
         super(props)
-        //Countries.map()
         this.state = {
-            showEditSection: false,
-            newContact: {},
-            formErrors: { linkedIn: '', github: '' },
-            formValid: false
+            showEditSection: false
         };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleCountryChange = this.handleCountryChange.bind(this);
     };
-   
+
+    getCities(country) {
+        if (!Array.isArray(Countries.country)) return [];
+        let cities = [];
+        Countries.country.map((index, value) => {
+            cities.push({ key: value, value: value, text: value });
+        });
+        return cities;
+    }
+
+    handleCountryChange(data) {
+    }
+
+    handleChange(event) {
+        const name = event.target.name;
+        const value = event.target.value;
+        this.setState({
+            newContact: { [name]: value }
+        }, () => this.validateField(name, value));
+    };
+
+    validateField(fieldName, value) {
+        let fieldValidationErrors = this.state.formErrors;
+        let fieldValid;
+        switch (fieldName) {
+            case 'linkedIn':
+                fieldValid = value === "" ? true : value.match(/^https:\/\/www.linkedin.com\/*/i);
+                fieldValidationErrors.linkedIn = fieldValid ? '' : 'LinkedIn URL is invalid';
+                break;
+            default:
+                break;
+        }
+
+        let formValid = true;
+        Object.keys(fieldValidationErrors).forEach(field => {
+            if (fieldValidationErrors[field] != '') {
+                formValid = false;
+            }
+        });
+
+        this.setState({
+            formErrors: fieldValidationErrors,
+            formValid: formValid
+        });
+    };
+
     render() {
         return (
             this.state.showEditSection ? this.renderEdit() : this.renderDisplay()
@@ -24,6 +67,13 @@ export class Address extends React.Component {
     };
 
     renderEdit() {
+
+        let countries = [];
+        Object.keys(Countries).map((key, index) => {
+            countries.push({ value: key, title: key });
+        });
+        console.log("countries:", countries);
+
         return (
             <Grid.Row>
                 <Grid.Column width={16}>
@@ -68,11 +118,17 @@ export class Address extends React.Component {
                         </Grid.Row>
                         <Grid.Row>
                             <Grid.Column width={6}>
-                                <Select
-                                    name="Country"
-                                />
+                                <div className="field">
+                                    <label>Country</label>
+                                    <Select
+                                        name="Country"
+                                        options={countries}
+                                        controlFunc={this.handleCountryChange}
+                                        />
+                                </div>
                             </Grid.Column>
                             <Grid.Column width={6}>
+
                             </Grid.Column>
                             <Grid.Column width={4}>
                                 <ChildSingleInput
@@ -87,17 +143,20 @@ export class Address extends React.Component {
                                 />
                             </Grid.Column>
                         </Grid.Row>
+                        <Grid.Row>
+                            <Button
+                                color='teal'
+                                disabled={!this.state.formValid}
+                                onClick={this.saveContact}
+                            >
+                                Save
+                            </Button>
+                            <Button onClick={() => { this.setState({ showEditSection: false }) }}>
+                                 Cancel
+                            </Button>
+                        </Grid.Row>
                     </Grid>
-                    <Button
-                        color='teal'
-                        disabled={!this.state.formValid}
-                        onClick={this.saveContact}
-                    >
-                        Save
-                    </Button>
-                        <Button onClick={() => { this.setState({ showEditSection: false }) }}>
-                            Cancel
-                    </Button>
+                    
                 </Grid.Column>
             </Grid.Row>
         )
