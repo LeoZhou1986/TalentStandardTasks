@@ -2,7 +2,7 @@
 import Cookies from 'js-cookie'
 import { default as Countries } from '../../../../util/jsonFiles/countries.json';
 import { ChildSingleInput } from '../Form/SingleInput.jsx';
-import { Select } from '../Form/Select.jsx';
+import { Select, ChildSelect } from '../Form/Select.jsx';
 import { Grid, Button, Dropdown, Popup } from 'semantic-ui-react';
 
 export class Address extends React.Component {
@@ -70,7 +70,7 @@ export class Address extends React.Component {
 
         let countries = [];
         Object.keys(Countries).map((key, index) => {
-            countries.push({ value: key, title: key });
+            countries.push({ key:key, value: key, text: key });
         });
         console.log("countries:", countries);
 
@@ -128,7 +128,10 @@ export class Address extends React.Component {
                                 </div>
                             </Grid.Column>
                             <Grid.Column width={6}>
-
+                                <ChildSelect
+                                    name="Country"
+                                    options={countries}
+                                />
                             </Grid.Column>
                             <Grid.Column width={4}>
                                 <ChildSingleInput
@@ -156,7 +159,6 @@ export class Address extends React.Component {
                             </Button>
                         </Grid.Row>
                     </Grid>
-                    
                 </Grid.Column>
             </Grid.Row>
         )
@@ -207,10 +209,7 @@ export class Address extends React.Component {
 export class Nationality extends React.Component {
     constructor(props) {
         super(props)
-       
     }
-
-    
     render() {
         return (
             <div></div>
