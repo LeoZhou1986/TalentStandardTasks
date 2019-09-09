@@ -36,11 +36,20 @@ export class ChildSelect extends React.Component {
                     selection
                     search={true}
                     options={this.props.options}
+                    onChange={this.props.handleChange}
                     value={this.props.value}
                     placeholder={this.props.placeholder}
-                    onChange={this.props.handleChange}
+                    onFocus={e => { e.target.setAttribute("autocomplete", "nope"); }}
                 />
             </div>
         )
     }
 }
+
+ChildSelect.propTypes = {
+    name: PropTypes.string.isRequired,
+    options: PropTypes.array.isRequired,
+    handleChange: PropTypes.func.isRequired,
+    value: PropTypes.string,
+    placeholder: PropTypes.string
+};

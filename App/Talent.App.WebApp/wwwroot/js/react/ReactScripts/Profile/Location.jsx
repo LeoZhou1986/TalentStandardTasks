@@ -1,9 +1,8 @@
 ﻿import React from 'react'
-import Cookies from 'js-cookie'
 import { default as Countries } from '../../../../util/jsonFiles/countries.json';
 import { ChildSingleInput } from '../Form/SingleInput.jsx';
-import { Select, ChildSelect } from '../Form/Select.jsx';
-import { Grid, Button, Dropdown, Popup } from 'semantic-ui-react';
+import { ChildSelect } from '../Form/Select.jsx';
+import { Grid, Button } from 'semantic-ui-react';
 
 export class Address extends React.Component {
     constructor(props) {
@@ -11,53 +10,71 @@ export class Address extends React.Component {
         this.state = {
             showEditSection: false
         };
-        this.handleChange = this.handleChange.bind(this);
+        this.setNewValue = this.setNewValue.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
         this.handleCountryChange = this.handleCountryChange.bind(this);
+        this.handleCityChange = this.handleCityChange.bind(this);
+        this.saveContact = this.saveContact.bind(this);
     };
 
     getCities(country) {
-        if (!Array.isArray(Countries.country)) return [];
+        if (!Array.isArray(Countries[country])) return [];
         let cities = [];
-        Countries.country.map((index, value) => {
+        Countries[country].map(value => {
             cities.push({ key: value, value: value, text: value });
         });
         return cities;
-    }
+    };
 
-    handleCountryChange(data) {
-    }
+    handleCountryChange(e, { value }) {
+        this.setNewValue({ country: value, city:"" });
+    };
 
-    handleChange(event) {
+    handleCityChange(e, { value }) {
+        this.setNewValue({ city: value });
+    };
+
+    handleInputChange(event) {
         const name = event.target.name;
         const value = event.target.value;
+        this.setNewValue({ [name]: value });
+    };
+
+    setNewValue(data) {
+        Object.keys(data).forEach(name => {
+            this.validateField(name, data[name]);
+        })
+
+        let formErrors = this.state.formErrors;
+        let formValid = true;
+        Object.keys(formErrors).forEach(field => {
+            if (formErrors[field] !== '') {
+                formValid = false;
+            }
+        });
         this.setState({
-            newContact: { [name]: value }
-        }, () => this.validateField(name, value));
+            newContact: Object.assign({}, this.state.newContact, data),
+            formErrors: formErrors,
+            formValid: formValid
+        });
     };
 
     validateField(fieldName, value) {
-        let fieldValidationErrors = this.state.formErrors;
+        let formErrors = this.state.formErrors;
         let fieldValid;
         switch (fieldName) {
-            case 'linkedIn':
-                fieldValid = value === "" ? true : value.match(/^https:\/\/www.linkedin.com\/*/i);
-                fieldValidationErrors.linkedIn = fieldValid ? '' : 'LinkedIn URL is invalid';
+            case 'postCode':
+                fieldValid = value === "" ? true : (/^\d*$/i).test(value);
+                formErrors.postCode = fieldValid ? '' : 'PostCode is invalid';
                 break;
             default:
                 break;
         }
+    };
 
-        let formValid = true;
-        Object.keys(fieldValidationErrors).forEach(field => {
-            if (fieldValidationErrors[field] != '') {
-                formValid = false;
-            }
-        });
-
-        this.setState({
-            formErrors: fieldValidationErrors,
-            formValid: formValid
-        });
+    saveContact(e) {
+        e.preventDefault();
+        console.log("Location newContact:", this.state.newContact);
     };
 
     render() {
@@ -72,7 +89,7 @@ export class Address extends React.Component {
         Object.keys(Countries).map((key, index) => {
             countries.push({ key:key, value: key, text: key });
         });
-        console.log("countries:", countries);
+        console.log("Location state:", this.state);
 
         return (
             <Grid.Row>
@@ -88,7 +105,7 @@ export class Address extends React.Component {
                                     value={this.state.newContact.number}
                                     isError={this.state.formErrors.number !== ""}
                                     errorMessage={this.state.formErrors.number}
-                                    controlFunc={this.handleChange}
+                                    controlFunc={this.handleInputChange}
                                 />
                             </Grid.Column>
                             <Grid.Column width={8}>
@@ -100,7 +117,7 @@ export class Address extends React.Component {
                                     value={this.state.newContact.street}
                                     isError={this.state.formErrors.street !== ""}
                                     errorMessage={this.state.formErrors.street}
-                                    controlFunc={this.handleChange}
+                                    controlFunc={this.handleInputChange}
                                 />
                             </Grid.Column>
                             <Grid.Column width={4}>
@@ -112,25 +129,27 @@ export class Address extends React.Component {
                                     value={this.state.newContact.suburb}
                                     isError={this.state.formErrors.suburb !== ""}
                                     errorMessage={this.state.formErrors.suburb}
-                                    controlFunc={this.handleChange}
+                                    controlFunc={this.handleInputChange}
                                 />
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
                             <Grid.Column width={6}>
-                                <div className="field">
-                                    <label>Country</label>
-                                    <Select
-                                        name="Country"
-                                        options={countries}
-                                        controlFunc={this.handleCountryChange}
-                                        />
-                                </div>
-                            </Grid.Column>
-                            <Grid.Column width={6}>
                                 <ChildSelect
                                     name="Country"
                                     options={countries}
+                                    handleChange={this.handleCountryChange}
+                                    value={this.state.newContact.country}
+                                    placeholder="Country"
+                                />
+                            </Grid.Column>
+                            <Grid.Column width={6}>
+                                <ChildSelect
+                                    name="City"
+                                    options={this.getCities(this.state.newContact.country)}
+                                    handleChange={this.handleCityChange}
+                                    value={this.state.newContact.city}
+                                    placeholder="City"
                                 />
                             </Grid.Column>
                             <Grid.Column width={4}>
@@ -142,21 +161,23 @@ export class Address extends React.Component {
                                     value={this.state.newContact.postCode}
                                     isError={this.state.formErrors.postCode !== ""}
                                     errorMessage={this.state.formErrors.postCode}
-                                    controlFunc={this.handleChange}
+                                    controlFunc={this.handleInputChange}
                                 />
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
-                            <Button
-                                color='teal'
-                                disabled={!this.state.formValid}
-                                onClick={this.saveContact}
-                            >
-                                Save
-                            </Button>
-                            <Button onClick={() => { this.setState({ showEditSection: false }) }}>
-                                 Cancel
-                            </Button>
+                            <Grid.Column width={16}>
+                                <Button
+                                    color='teal'
+                                    disabled={!this.state.formValid}
+                                    onClick={this.saveContact}
+                                >
+                                    Save
+                                </Button>
+                                <Button onClick={() => { this.setState({ showEditSection: false }) }}>
+                                     Cancel
+                                </Button>
+                            </Grid.Column>
                         </Grid.Row>
                     </Grid>
                 </Grid.Column>
@@ -183,10 +204,9 @@ export class Address extends React.Component {
                         <p>Country: {country}</p>
                     </React.Fragment>
                     <Button color='teal' floated='right' onClick={e => {
-                        e.preventDefault();
                         this.setState({
                             showEditSection: true,
-                            newContact: Object.assign({}, this.props.address),
+                            newContact: Object.assign({}, this.props.addressData),
                             formErrors: {
                                 number: "",
                                 street: "",
