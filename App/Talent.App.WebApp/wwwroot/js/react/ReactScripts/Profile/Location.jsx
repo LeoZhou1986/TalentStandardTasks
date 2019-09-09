@@ -2,7 +2,16 @@
 import { default as Countries } from '../../../../util/jsonFiles/countries.json';
 import { ChildSingleInput } from '../Form/SingleInput.jsx';
 import { ChildSelect } from '../Form/Select.jsx';
-import { Grid, Button } from 'semantic-ui-react';
+import { Grid, Button, Dropdown } from 'semantic-ui-react';
+
+
+export const getCountries = () => {
+    let countries = [];
+    Object.keys(Countries).map((key, index) => {
+        countries.push({ key: key, value: key, text: key });
+    });
+    return countries;
+};
 
 export class Address extends React.Component {
     constructor(props) {
@@ -229,10 +238,27 @@ export class Address extends React.Component {
 export class Nationality extends React.Component {
     constructor(props) {
         super(props)
-    }
+        this.handleChange = this.handleChange.bind(this);
+    };
+    handleChange(e, { value }) {
+        console.log("Nationality:", value);
+    };
     render() {
         return (
-            <div></div>
+            <Grid.Row>
+                <Grid.Column width={8}>
+                    <Dropdown
+                        fluid
+                        selection
+                        search={true}
+                        options={getCountries()}
+                        onChange={this.handleChange}
+                        value={this.props.nationality}
+                        placeholder="Select your nationality"
+                        onFocus={e => { e.target.setAttribute("autocomplete", "nope"); }}
+                    />
+                </Grid.Column>
+            </Grid.Row>
         )
-    }
+    };
 }
