@@ -16,16 +16,24 @@ const languageLevels = [
 export default class Language extends React.Component {
     constructor(props) {
         super(props);
-        this.getEditComponet = this.getEditComponet.bind(this);
+        this.getAddComponent = this.getAddComponent.bind(this);
+        this.getEditComponent = this.getEditComponent.bind(this);
     }
 
-    getEditComponet(data, handleUpdate, handleCancel) {
+    getAddComponent(handleAdd, handleCancel) {
         return <EditLanguage
-                    language={data}
-                    handleUpdate={handleUpdate}
-                    handleCancel={handleCancel}
-                />;
-    }
+            handleConfirm={handleAdd}
+            handleCancel={handleCancel}
+            />
+    };
+
+    getEditComponent(data, handleUpdate, handleCancel) {
+        return <EditLanguage
+            language={data}
+            handleConfirm={handleUpdate}
+            handleCancel={handleCancel}
+            />;
+    };
 
     render() {
         return (
@@ -38,7 +46,8 @@ export default class Language extends React.Component {
                             { id: "1", name: "C#", level: "Basic" },
                             { id: "3", name: "Chinese", level: "Basic" }
                         ]}
-                        getEditComponet={this.getEditComponet}
+                        getAddComponent={this.getAddComponent}
+                        getEditComponent={this.getEditComponent}
                     />
                 </Grid.Column>
             </Grid.Row>
@@ -49,17 +58,21 @@ export default class Language extends React.Component {
 export class EditLanguage extends React.Component {
     constructor(props) {
         super(props);
-        const language = props.language ?
-            Object.assign({}, props.language)
-            : {
-                name: "",
-                level: ""
-            };
+        let language, isEdit, levelError;
+        if (props.language) {
+            language = Object.assign({}, props.language);
+            isEdit = true;
+            levelError = "";
+        } else {
+            language = { name: "", level: "" };
+            isEdit = false;
+            levelError = "level is required";
+        }
         this.state = {
-            showEditSection: false,
+            isEdit: isEdit,
             newContact: language,
-            formErrors: { name: ''},
-            formValid: true
+            formErrors: { name: "", level: levelError },
+            formValid: isEdit
         };
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleLeveChange = this.handleLeveChange.bind(this);
@@ -102,6 +115,9 @@ export class EditLanguage extends React.Component {
                 fieldValid = value !== "";
                 formErrors.name = fieldValid ? '' : 'name is required';
                 break;
+            case "level":
+                fieldValid = value !== "";
+                formErrors.level = fieldValid ? '' : 'level is required';
             default:
                 break;
         }
@@ -137,22 +153,25 @@ export class EditLanguage extends React.Component {
                     </Grid.Column>
                     <Grid.Column width={5}>
                         <Button
-                            basic
+                            basic={this.state.isEdit ? true : false}
                             compact
-                            color='blue'
+                            color={this.state.isEdit ? "blue" : "teal"}
                             disabled={!this.state.formValid}
                             onClick={e => {
                                 e.preventDefault();
-                                this.props.handleUpdate(this.state.newContact);
+                                this.props.handleConfirm(this.state.newContact);
                             }}
                         >
-                            Update
+                            {this.state.isEdit ? "Update" : "Add"}
                         </Button>
                         <Button
-                            basic
+                            basic={this.state.isEdit ? true : false}
                             compact
-                            color='red'
-                            onClick={e => this.props.handleCancel()}
+                            color={this.state.isEdit ? "red" : null}
+                            onClick={e => {
+                                e.preventDefault();
+                                this.props.handleCancel()
+                            }}
                         >
                             Cancel
                         </Button>
@@ -164,7 +183,12 @@ export class EditLanguage extends React.Component {
 }
 
 EditLanguage.propTypes = {
-    language: PropTypes.object.isRequired,      // {id:"id",name:"name",level:"level"}
-    handleUpdate: PropTypes.func.isRequired,    // (data:"Object")
+    language: PropTypes.shape({
+        id: PropTypes.string,
+        name: PropTypes.string,
+        level: PropTypes.string,
+    }),
+
+    handleConfirm: PropTypes.func.isRequired,   // (data:"Object")
     handleCancel: PropTypes.func.isRequired,    // ()
 };

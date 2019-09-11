@@ -129,8 +129,7 @@ export default class SocialMediaLinkedAccount extends React.Component {
                 >
                     <Icon name='github'/> GitHub
                 </Button>
-                <Button color='teal' floated='right' onClick={e => {
-                    e.preventDefault();
+                <Button type='button' role='' color='teal' floated='right' onClick={e => {
                     this.setState({
                         showEditSection: true,
                         newContact: Object.assign({}, this.props.linkedAccounts),
