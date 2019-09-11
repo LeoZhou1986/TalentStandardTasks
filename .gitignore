@@ -16,9 +16,14 @@
 *
 !*/
 !/Talent.Services.Profile/Domain/Services/ProfileService.cs
+
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Profile/SocialMediaLinkedAccount.jsx
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Profile/Location.jsx
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Profile/SelfIntroduction.jsx
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Profile/Language.jsx
+
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Form/Select.jsx
+!/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Form/SingleInput.jsx
+
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Table/EditableTable.jsx
+
