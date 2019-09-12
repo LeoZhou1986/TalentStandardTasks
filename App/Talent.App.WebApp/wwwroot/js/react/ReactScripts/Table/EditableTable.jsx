@@ -17,19 +17,16 @@ export class EditableTable extends React.Component {
     };
 
     handleAdd(data) {
-        console.log("Add: ", data);
         this.handleCancelAdd();
         this.props.handleAdd(data);
     };
 
     handleDelete(data) {
-        console.log("Delete: ", data);
         this.handleCancelEdit();
         this.props.handleDelete(data);
     };
 
     handleUpdate(data) {
-        console.log("Update: ", data);
         this.handleCancelEdit();
         this.props.handleUpdate(data);
     };

@@ -18,6 +18,9 @@ export default class Language extends React.Component {
         super(props);
         this.getAddComponent = this.getAddComponent.bind(this);
         this.getEditComponent = this.getEditComponent.bind(this);
+        this.handleAdd = this.handleAdd.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
+        this.handleUpdate = this.handleUpdate.bind(this);
     }
 
     getAddComponent(handleAdd, handleCancel) {
@@ -35,6 +38,18 @@ export default class Language extends React.Component {
             />;
     };
 
+    handleAdd(data) {
+        console.log("Add: ", data);
+    };
+
+    handleDelete(data) {
+        console.log("Delete: ", data);
+    };
+
+    handleUpdate(data) {
+        console.log("Update: ", data);
+    };
+
     render() {
         return (
             <Grid.Row>
@@ -48,6 +63,9 @@ export default class Language extends React.Component {
                         ]}
                         getAddComponent={this.getAddComponent}
                         getEditComponent={this.getEditComponent}
+                        handleAdd={this.handleAdd}
+                        handleDelete={this.handleDelete}
+                        handleUpdate={this.handleUpdate}
                     />
                 </Grid.Column>
             </Grid.Row>
