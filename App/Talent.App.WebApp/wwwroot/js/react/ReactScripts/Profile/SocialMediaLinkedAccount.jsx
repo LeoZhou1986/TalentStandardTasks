@@ -15,9 +15,7 @@ export default class SocialMediaLinkedAccount extends React.Component {
 
         this.state = {
             showEditSection: false,
-            newContact: linkedAccounts,
-            formErrors: { linkedIn: '', github: '' },
-            formValid: false
+            newContact: linkedAccounts
         };
         this.saveContact = this.saveContact.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -30,21 +28,16 @@ export default class SocialMediaLinkedAccount extends React.Component {
     handleChange(event) {
         const name = event.target.name;
         const value = event.target.value;
-        this.setState({
-            newContact: { [name]: value }
-        }, () => this.validateField(name, value));
-    };
 
-    validateField(fieldName, value) {
         let formErrors = this.state.formErrors;
         let fieldValid;
-        switch (fieldName) {
+        switch (name) {
             case 'linkedIn':
-                fieldValid = value==="" ? true : value.match(/^https:\/\/www.linkedin.com\/*/i);
+                fieldValid = value === "" ? true : value.match(/^https:\/\/www.linkedin.com\/*/i);
                 formErrors.linkedIn = fieldValid ? '' : 'LinkedIn URL is invalid';
                 break;
             case 'github':
-                fieldValid = value==="" ? true : value.match(/^https:\/\/github.com\/*/i);
+                fieldValid = value === "" ? true : value.match(/^https:\/\/github.com\/*/i);
                 formErrors.github = fieldValid ? '' : 'GitHub URL is invalid';
                 break
             default:
@@ -60,7 +53,8 @@ export default class SocialMediaLinkedAccount extends React.Component {
 
         this.setState({
             formErrors: formErrors,
-            formValid: formValid
+            formValid: formValid,
+            newContact: Object.assign({}, this.state.newContact, { [name]: value })
         });
     };
 
