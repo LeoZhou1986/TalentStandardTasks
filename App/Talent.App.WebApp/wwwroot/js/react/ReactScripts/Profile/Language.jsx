@@ -1,7 +1,6 @@
 ﻿/* Language section */
 import React from 'react';
 import PropTypes from 'prop-types';
-import Cookies from 'js-cookie';
 import { EditableTable } from '../Table/EditableTable.jsx';
 import { SingleInput } from '../Form/SingleInput.jsx';
 import { Grid, Dropdown, Button } from 'semantic-ui-react';
@@ -56,11 +55,7 @@ export default class Language extends React.Component {
                 <Grid.Column width={16}>
                     <EditableTable
                         fieldNames={[{ name: "Language", key:"name", width: 5 }, { name: "Level", key:"level", width: 7 }]}
-                        rowData={[
-                            { id: "0", name: "English", level: "Basic" },
-                            { id: "1", name: "C#", level: "Basic" },
-                            { id: "3", name: "Chinese", level: "Basic" }
-                        ]}
+                        rowData={this.props.languages}
                         getAddComponent={this.getAddComponent}
                         getEditComponent={this.getEditComponent}
                         handleAdd={this.handleAdd}
@@ -72,6 +67,14 @@ export default class Language extends React.Component {
         )
     }
 }
+
+Language.propTypes = {
+    languages: PropTypes.arrayOf(function (propValue, key, componentName, location, propFullName) {
+        if (typeof propValue[key].id !== "string") return new Error(`Invalid prop '${propFullName}.id' supplied to '${componentName}' . Validation failed.`);
+        if (typeof propValue[key].name !== "string") return new Error(`Invalid prop '${propFullName}.name' supplied to '${componentName}' . Validation failed.`);
+        if (typeof propValue[key].level !== "string") return new Error(`Invalid prop '${propFullName}.level' supplied to '${componentName}' . Validation failed.`);
+    }).isRequired
+};
 
 export class EditLanguage extends React.Component {
     constructor(props) {
@@ -171,23 +174,23 @@ export class EditLanguage extends React.Component {
                     </Grid.Column>
                     <Grid.Column width={5}>
                         <Button
+                            type='reset'
                             basic={this.state.isEdit ? true : false}
                             compact
                             color={this.state.isEdit ? "blue" : "teal"}
                             disabled={!this.state.formValid}
                             onClick={e => {
-                                e.preventDefault();
                                 this.props.handleConfirm(this.state.newContact);
                             }}
                         >
                             {this.state.isEdit ? "Update" : "Add"}
                         </Button>
                         <Button
+                            type='reset'
                             basic={this.state.isEdit ? true : false}
                             compact
                             color={this.state.isEdit ? "red" : null}
                             onClick={e => {
-                                e.preventDefault();
                                 this.props.handleCancel()
                             }}
                         >
@@ -201,7 +204,7 @@ export class EditLanguage extends React.Component {
 }
 
 EditLanguage.propTypes = {
-    language: PropTypes.shape({
+    language: PropTypes.exact({
         id: PropTypes.string,
         name: PropTypes.string,
         level: PropTypes.string,

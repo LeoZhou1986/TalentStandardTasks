@@ -52,10 +52,10 @@ export class EditableTable extends React.Component {
                             )}
                             <Table.HeaderCell width={3} textAlign='center'>
                                 <Button
+                                    type='reset'
                                     compact
                                     color='teal'
                                     onClick={e => {
-                                        e.preventDefault();
                                         this.setState({ addNew: true, editRow: -1 });
                                     }}
                                 >
