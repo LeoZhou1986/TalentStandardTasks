@@ -251,9 +251,11 @@ export class Nationality extends React.Component {
         super(props)
         this.handleChange = this.handleChange.bind(this);
     };
+
     handleChange(e, { value }) {
         console.log("Nationality:", value);
     };
+
     render() {
         return (
             <Grid.Row>
@@ -273,3 +275,7 @@ export class Nationality extends React.Component {
         )
     };
 }
+
+Nationality.propTypes = {
+    nationality: PropTypes.string
+};
