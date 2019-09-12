@@ -83,8 +83,8 @@ export class Address extends React.Component {
     };
 
     saveContact(e) {
-        e.preventDefault();
-        console.log("Location newContact:", this.state.newContact);
+        this.props.saveProfileData({ address: this.state.newContact });
+        this.setState({ showEditSection: false });
     };
 
     render() {
@@ -94,7 +94,6 @@ export class Address extends React.Component {
     };
 
     renderEdit() {
-        //console.log("Location state:", this.state);
         return (
             <Grid.Row>
                 <Grid.Column width={16}>
@@ -244,6 +243,7 @@ Address.propTypes = {
         city: PropTypes.string,
         country: PropTypes.string
     }).isRequired,
+    saveProfileData: PropTypes.func
 };
 
 export class Nationality extends React.Component {
@@ -253,7 +253,7 @@ export class Nationality extends React.Component {
     };
 
     handleChange(e, { value }) {
-        console.log("Nationality:", value);
+        this.props.saveProfileData({ nationality: value });
     };
 
     render() {
@@ -277,5 +277,6 @@ export class Nationality extends React.Component {
 }
 
 Nationality.propTypes = {
-    nationality: PropTypes.string
+    nationality: PropTypes.string,
+    saveProfileData: PropTypes.func
 };

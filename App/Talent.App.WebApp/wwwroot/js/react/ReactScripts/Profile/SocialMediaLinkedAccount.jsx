@@ -23,7 +23,8 @@ export default class SocialMediaLinkedAccount extends React.Component {
     }
 
     saveContact() {
-        console.log("SocialMediaLinkedAccount Save:", this.state.newContact);
+        this.props.saveProfileData({ linkedAccounts: this.state.newContact });
+        this.setState({ showEditSection: false })
     }
 
     handleChange(event) {
@@ -66,7 +67,6 @@ export default class SocialMediaLinkedAccount extends React.Component {
     };
 
     renderEdit() {
-        console.log(this.state);
         return (
             <div className='ui sixteen wide column'>
                 <SingleInput
@@ -144,4 +144,5 @@ SocialMediaLinkedAccount.propTypes = {
         linkedIn: PropTypes.string,
         github: PropTypes.string
     }).isRequired,
+    saveProfileData: PropTypes.func
 };
