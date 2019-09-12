@@ -1,5 +1,6 @@
 ﻿/* Social media JSX */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ChildSingleInput } from '../Form/SingleInput.jsx';
 import { Button, Icon } from 'semantic-ui-react';
 
@@ -133,8 +134,14 @@ export default class SocialMediaLinkedAccount extends React.Component {
                 }}>
                     Edit
                 </Button>
-                
             </div>
         )
     };
 }
+
+SocialMediaLinkedAccount.propTypes = {
+    linkedAccounts: PropTypes.exact({
+        linkedIn: PropTypes.string,
+        github: PropTypes.string
+    }).isRequired,
+};
