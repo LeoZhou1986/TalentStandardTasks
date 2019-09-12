@@ -1,7 +1,7 @@
 ﻿/* Social media JSX */
 import React from 'react';
 import { ChildSingleInput } from '../Form/SingleInput.jsx';
-import { Segment, Button, Icon, Popup } from 'semantic-ui-react';
+import { Button, Icon } from 'semantic-ui-react';
 
 export default class SocialMediaLinkedAccount extends React.Component {
     constructor(props) {
@@ -19,18 +19,13 @@ export default class SocialMediaLinkedAccount extends React.Component {
             formErrors: { linkedIn: '', github: '' },
             formValid: false
         };
-        this.openLink = this.openLink.bind(this);
+        this.saveContact = this.saveContact.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
 
-    componentDidMount() {
-        //$('.ui.button.social-media').popup();
-    };
-
-    openLink(e, url) {
-        e.preventDefault();
-        window.open(url, "_blank");
-    };
+    saveContact() {
+        console.log("SocialMediaLinkedAccount Save:", this.state.newContact);
+    }
 
     handleChange(event) {
         const name = event.target.name;
@@ -41,30 +36,30 @@ export default class SocialMediaLinkedAccount extends React.Component {
     };
 
     validateField(fieldName, value) {
-        let fieldValidationErrors = this.state.formErrors;
+        let formErrors = this.state.formErrors;
         let fieldValid;
         switch (fieldName) {
             case 'linkedIn':
                 fieldValid = value==="" ? true : value.match(/^https:\/\/www.linkedin.com\/*/i);
-                fieldValidationErrors.linkedIn = fieldValid ? '' : 'LinkedIn URL is invalid';
+                formErrors.linkedIn = fieldValid ? '' : 'LinkedIn URL is invalid';
                 break;
             case 'github':
                 fieldValid = value==="" ? true : value.match(/^https:\/\/github.com\/*/i);
-                fieldValidationErrors.github = fieldValid ? '' : 'GitHub URL is invalid';
+                formErrors.github = fieldValid ? '' : 'GitHub URL is invalid';
                 break
             default:
                 break;
         }
 
         let formValid = true;
-        Object.keys(fieldValidationErrors).forEach(field => {
-            if (fieldValidationErrors[field] != '') {
+        Object.keys(formErrors).forEach(field => {
+            if (formErrors[field] != '') {
                 formValid = false;
             }
         });
 
         this.setState({
-            formErrors: fieldValidationErrors,
+            formErrors: formErrors,
             formValid: formValid
         });
     };
@@ -76,6 +71,7 @@ export default class SocialMediaLinkedAccount extends React.Component {
     };
 
     renderEdit() {
+        console.log(this.state);
         return (
             <div className='ui sixteen wide column'>
                 <ChildSingleInput
@@ -98,14 +94,16 @@ export default class SocialMediaLinkedAccount extends React.Component {
                     errorMessage={this.state.formErrors.github}
                     controlFunc={this.handleChange}
                 />
+                
                 <Button
+                    type='button'
                     color='teal'
                     disabled={!this.state.formValid}
                     onClick={this.saveContact}
                 >
                     Save
                 </Button>
-                <Button onClick={() => { this.setState({ showEditSection: false }) }}>
+                <Button type='button' onClick={() => this.setState({ showEditSection: false })}>
                     Cancel
                 </Button>
             </div>
@@ -116,20 +114,22 @@ export default class SocialMediaLinkedAccount extends React.Component {
         return (
             <div className='ui sixteen wide column'>
                 <Button
+                    type='button'
                     color='linkedin'
                     disabled={this.props.linkedAccounts.linkedIn === ""}
-                    onClick={e => this.openLink(e, this.props.linkedAccounts.linkedIn)}
+                    onClick={e => window.open(this.props.linkedAccounts.linkedIn, "_blank")}
                 >
                     <Icon name='linkedin' /> LinkedIn
                 </Button>
                 <Button
+                    type='button'
                     color='black'
                     disabled={this.props.linkedAccounts.github === ""}
-                    onClick={e => this.openLink(e, this.props.linkedAccounts.github)}
+                    onClick={e => window.open(this.props.linkedAccounts.github, "_blank")}
                 >
                     <Icon name='github'/> GitHub
                 </Button>
-                <Button type='button' role='' color='teal' floated='right' onClick={e => {
+                <Button type='reset' color='teal' floated='right' onClick={e => {
                     this.setState({
                         showEditSection: true,
                         newContact: Object.assign({}, this.props.linkedAccounts),
@@ -139,6 +139,7 @@ export default class SocialMediaLinkedAccount extends React.Component {
                 }}>
                     Edit
                 </Button>
+                
             </div>
         )
     };
