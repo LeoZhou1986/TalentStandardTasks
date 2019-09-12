@@ -56,7 +56,6 @@ export class ChildSingleInput extends React.Component {
     }
 }
 
-
 ChildSingleInput.propTypes = {
     inputType: PropTypes.oneOf(['text', 'number', 'password']).isRequired,
     name: PropTypes.string.isRequired,
@@ -66,7 +65,7 @@ ChildSingleInput.propTypes = {
     ]).isRequired,
     placeholder: PropTypes.string,
     controlFunc: PropTypes.func.isRequired,
-    //isError: PropTypes.bool.isRequired,
+    isError: PropTypes.bool.isRequired,
     errorMessage: PropTypes.string.isRequired
 }
 
