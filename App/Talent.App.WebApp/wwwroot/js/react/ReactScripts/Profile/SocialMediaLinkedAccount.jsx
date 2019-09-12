@@ -1,7 +1,7 @@
 ﻿/* Social media JSX */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ChildSingleInput } from '../Form/SingleInput.jsx';
+import { SingleInput } from '../Form/SingleInput.jsx';
 import { Button, Icon } from 'semantic-ui-react';
 
 export default class SocialMediaLinkedAccount extends React.Component {
@@ -69,22 +69,22 @@ export default class SocialMediaLinkedAccount extends React.Component {
         console.log(this.state);
         return (
             <div className='ui sixteen wide column'>
-                <ChildSingleInput
+                <SingleInput
                     inputType="text"
-                    label="LinkedIn"
+                    title="LinkedIn"
                     name="linkedIn"
                     placeholder="Enter your LinkedIn URL"
-                    value={this.state.newContact.linkedIn}
+                    content={this.state.newContact.linkedIn}
                     isError={this.state.formErrors.linkedIn !== ""}
                     errorMessage={this.state.formErrors.linkedIn}
                     controlFunc={this.handleChange}
                 />
-                <ChildSingleInput
+                <SingleInput
                     inputType="text"
-                    label="GitHub"
+                    title="GitHub"
                     name="github"
                     placeholder="Enter your GitHub URL"
-                    value={this.state.newContact.github}
+                    content={this.state.newContact.github}
                     isError={this.state.formErrors.github !== ""}
                     errorMessage={this.state.formErrors.github}
                     controlFunc={this.handleChange}

@@ -1,8 +1,10 @@
 ﻿import React from 'react';
 import PropTypes from 'prop-types';
 
-export const SingleInput = (props) =>
-    <div className={`field ${props.isError == true ? 'error' : ''} `}>
+export const SingleInput = (props) => {
+    let label = props.title ? <label>{props.title}</label> : null;
+    return <div className={`field ${props.isError == true ? 'error' : ''} `}>
+        {label}
         <input
             type={props.inputType}
             placeholder={props.placeholder}
@@ -11,11 +13,13 @@ export const SingleInput = (props) =>
             onChange={props.controlFunc} />
         {props.isError ? <div className="ui basic red pointing prompt label transition visible">{props.errorMessage}</div> : null}
     </div>
+}
+    
 
 SingleInput.propTypes = {
     inputType: PropTypes.oneOf(['text', 'number', 'password', 'date']).isRequired,
     errorMessage: PropTypes.string.isRequired,
-    //title: PropTypes.string.isRequired,
+    title: PropTypes.string,
     name: PropTypes.string.isRequired,
     controlFunc: PropTypes.func.isRequired,
     content: PropTypes.oneOfType([
@@ -73,29 +77,5 @@ export class CharactersRemaining extends React.Component {
         return (
             <div className="floatRight" >Word count : {characters} / {this.props.maxLength}</div>
         )
-    }
-}
-
-//Updates state in parent component
-export class SingleInputNew extends React.Component {
-    constructor(props) {
-        super(props);
-    };
-
-    render() {
-        return (
-            <div>
-                <input
-                    type={this.props.inputType}
-                    name={this.props.name}
-                    value={this.props.value}
-                    placeholder={this.props.placeholder}
-                    maxLength={this.props.maxLength}
-                    onChange={this.props.controlFunc}
-                />
-                {this.props.isError ? <div className="ui basic red pointing prompt label transition visible">{this.props.errorMessage}</div> : null}
-            </div>
-        )
-
     }
 }
