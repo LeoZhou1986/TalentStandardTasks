@@ -1,6 +1,7 @@
 ﻿/* Skill section */
 import React from 'react';
 import Cookies from 'js-cookie';
+import PropTypes from 'prop-types';
 import { EditableTable } from '../Table/EditableTable.jsx';
 import { SingleInput } from '../Form/SingleInput.jsx';
 import { Grid, Dropdown, Button } from 'semantic-ui-react';
@@ -54,11 +55,7 @@ export default class Skill extends React.Component {
                <Grid.Column width={16}>
                    <EditableTable
                        fieldNames={[{ name: "Skill", key: "name", width: 5 }, { name: "Level", key: "level", width: 7 }]}
-                       rowData={[
-                           { id: "0", name: "C#", level: "Beginner" },
-                           { id: "1", name: "PHP", level: "Beginner" },
-                           { id: "2", name: "ActionSprite", level: "Expert" }
-                       ]}
+                       rowData={this.props.skills}
                        getAddComponent={this.getAddComponent}
                        getEditComponent={this.getEditComponent}
                        handleAdd={this.handleAdd}
@@ -70,6 +67,14 @@ export default class Skill extends React.Component {
        )
     }
 }
+
+Skill.propTypes = {
+    skills: PropTypes.arrayOf(function (propValue, key, componentName, location, propFullName) {
+        if (typeof propValue[key].id !== "string") return new Error(`Invalid prop '${propFullName}.id' supplied to '${componentName}' . Validation failed.`);
+        if (typeof propValue[key].name !== "string") return new Error(`Invalid prop '${propFullName}.name' supplied to '${componentName}' . Validation failed.`);
+        if (typeof propValue[key].level !== "string") return new Error(`Invalid prop '${propFullName}.level' supplied to '${componentName}' . Validation failed.`);
+    }).isRequired
+};
 
 export class EditSkill extends React.Component {
     constructor(props) {
@@ -171,23 +176,23 @@ export class EditSkill extends React.Component {
                     </Grid.Column>
                     <Grid.Column width={5}>
                         <Button
+                            type='reset'
                             basic={this.state.isEdit ? true : false}
                             compact
                             color={this.state.isEdit ? "blue" : "teal"}
                             disabled={!this.state.formValid}
                             onClick={e => {
-                                e.preventDefault();
                                 this.props.handleConfirm(this.state.newContact);
                             }}
                         >
                             {this.state.isEdit ? "Update" : "Add"}
                         </Button>
                         <Button
+                            type='reset'
                             basic={this.state.isEdit ? true : false}
                             compact
                             color={this.state.isEdit ? "red" : null}
                             onClick={e => {
-                                e.preventDefault();
                                 this.props.handleCancel()
                             }}
                         >
@@ -199,3 +204,14 @@ export class EditSkill extends React.Component {
         )
     }
 }
+
+EditSkill.propTypes = {
+    contact: PropTypes.exact({
+        id: PropTypes.string,
+        name: PropTypes.string,
+        level: PropTypes.string,
+    }),
+
+    handleConfirm: PropTypes.func.isRequired,   // (data:"Object")
+    handleCancel: PropTypes.func.isRequired,    // ()
+};
