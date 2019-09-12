@@ -1,4 +1,5 @@
 ﻿import React from 'react'
+import PropTypes from 'prop-types';
 import { default as Countries } from '../../../../util/jsonFiles/countries.json';
 import { ChildSingleInput } from '../Form/SingleInput.jsx';
 import { ChildSelect } from '../Form/Select.jsx';
@@ -93,13 +94,7 @@ export class Address extends React.Component {
     };
 
     renderEdit() {
-
-        let countries = [];
-        Object.keys(Countries).map((key, index) => {
-            countries.push({ key:key, value: key, text: key });
-        });
-        console.log("Location state:", this.state);
-
+        //console.log("Location state:", this.state);
         return (
             <Grid.Row>
                 <Grid.Column width={16}>
@@ -146,7 +141,7 @@ export class Address extends React.Component {
                             <Grid.Column width={6}>
                                 <ChildSelect
                                     name="Country"
-                                    options={countries}
+                                    options={getCountries()}
                                     handleChange={this.handleCountryChange}
                                     value={this.state.newContact.country}
                                     placeholder="Country"
@@ -177,13 +172,14 @@ export class Address extends React.Component {
                         <Grid.Row>
                             <Grid.Column width={16}>
                                 <Button
+                                    type='reset'
                                     color='teal'
                                     disabled={!this.state.formValid}
                                     onClick={this.saveContact}
                                 >
                                     Save
                                 </Button>
-                                <Button onClick={() => { this.setState({ showEditSection: false }) }}>
+                                <Button type='reset' onClick={() => this.setState({ showEditSection: false }) }>
                                      Cancel
                                 </Button>
                             </Grid.Column>
@@ -198,7 +194,11 @@ export class Address extends React.Component {
         let address, city, country;
         if (this.props.address) {
             let data = this.props.address;
-            address = `${data.number}, ${data.street}, ${data.suburb}, ${data.postCode}`;
+            address = "";
+            if (data.number) address = address ? address + ", " + data.number : data.number;
+            if (data.street) address = address ? address + ", " + data.street : data.street;
+            if (data.suburb) address = address ? address + ", " + data.suburb : data.suburb;
+            if (data.postCode) address = address ? address + ", " + data.postCode : data.postCode;
             city = this.props.address.city;
             country = this.props.address.country;
         } else {
@@ -212,10 +212,10 @@ export class Address extends React.Component {
                         <p>City: {city}</p>
                         <p>Country: {country}</p>
                     </React.Fragment>
-                    <Button color='teal' floated='right' onClick={e => {
+                    <Button type='reset' color='teal' floated='right' onClick={e => {
                         this.setState({
                             showEditSection: true,
-                            newContact: Object.assign({}, this.props.addressData),
+                            newContact: Object.assign({}, this.props.address),
                             formErrors: {
                                 number: "",
                                 street: "",
@@ -234,6 +234,17 @@ export class Address extends React.Component {
         )
     };
 }
+
+Address.propTypes = {
+    address: PropTypes.exact({
+        number: PropTypes.string,
+        street: PropTypes.string,
+        suburb: PropTypes.string,
+        postCode: PropTypes.number,
+        city: PropTypes.string,
+        country: PropTypes.string
+    }).isRequired,
+};
 
 export class Nationality extends React.Component {
     constructor(props) {

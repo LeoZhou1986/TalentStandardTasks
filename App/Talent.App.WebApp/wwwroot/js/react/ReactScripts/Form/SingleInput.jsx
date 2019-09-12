@@ -39,7 +39,7 @@ export class ChildSingleInput extends React.Component {
 
     render() {
         return (
-            <div className="field">
+            <div className={`field ${this.props.isError == true ? 'error' : ''} `}>
                 <label>{this.props.label}</label>
                 <input
                     type={this.props.inputType}
