@@ -19,6 +19,8 @@ namespace Talent.Services.Profile.Domain.Services
     {
         private readonly IUserAppContext _userAppContext;
         IRepository<UserLanguage> _userLanguageRepository;
+        IRepository<UserSkill> _userSkillRepository;
+        IRepository<UserExperience> _userExperienceRepository;
         IRepository<User> _userRepository;
         IRepository<Employer> _employerRepository;
         IRepository<Job> _jobRepository;
@@ -28,6 +30,8 @@ namespace Talent.Services.Profile.Domain.Services
 
         public ProfileService(IUserAppContext userAppContext,
                               IRepository<UserLanguage> userLanguageRepository,
+                              IRepository<UserSkill> userSkillRepository,
+                              IRepository<UserExperience> userExperienceRepository,
                               IRepository<User> userRepository,
                               IRepository<Employer> employerRepository,
                               IRepository<Job> jobRepository,
@@ -36,6 +40,8 @@ namespace Talent.Services.Profile.Domain.Services
         {
             _userAppContext = userAppContext;
             _userLanguageRepository = userLanguageRepository;
+            _userSkillRepository = userSkillRepository;
+            _userExperienceRepository = userExperienceRepository;
             _userRepository = userRepository;
             _employerRepository = employerRepository;
             _jobRepository = jobRepository;
@@ -109,21 +115,20 @@ namespace Talent.Services.Profile.Domain.Services
             return null;
         }
 
-        public async Task<bool> UpdateTalentProfile(TalentProfileViewModel model, string updaterId)
+        public async Task<string> UpdateTalentProfile(TalentProfileViewModel model, string updaterId)
         {
             try
             {
+                string message = "";
                 User user = (await _userRepository.GetByIdAsync(model.Id));
 
                 user.LinkedAccounts = model.LinkedAccounts;
-
-                user.Summary = model.Summary;
-                user.Description = model.Description;
 
                 user.FirstName = model.FirstName;
                 user.MiddleName = model.MiddleName;
                 user.LastName = model.LastName;
                 user.Gender = model.Gender;
+
                 user.Email = model.Email;
                 user.Phone = model.Phone;
                 user.MobilePhone = model.MobilePhone;
@@ -133,11 +138,14 @@ namespace Talent.Services.Profile.Domain.Services
 
                 user.Nationality = model.Nationality;
 
-                //user.Languages = model.Languages;
+                message = await UpdateTalentLanguagesFromView(user, model);
+                if (!String.IsNullOrWhiteSpace(message)) return message;
 
-                //user.Skills = model.Skills;
+                message = await UpdateTalentSkillsFromView(user, model);
+                if (!String.IsNullOrWhiteSpace(message)) return message;
 
-                //user.Experience = model.Experience;
+                message = await UpdateTalentExperiencesFromView(user, model);
+                if (!String.IsNullOrWhiteSpace(message)) return message;
 
                 user.VisaStatus = model.VisaStatus;
                 user.VisaExpiryDate = model.VisaExpiryDate;
@@ -147,24 +155,19 @@ namespace Talent.Services.Profile.Domain.Services
                 user.ProfilePhoto = model.ProfilePhoto;
                 user.ProfilePhotoUrl = model.ProfilePhotoUrl;
 
-                /*
-                user.VideoName = model.VideoName;
-                user.CvName = model.CvName;
-                user.Education = model.Education;
-                user.Certifications = model.Certifications;
-                user.Location
-                user.Videos
-                */
+                user.Summary = model.Summary;
+                user.Description = model.Description;
 
-                user.UpdatedBy = updaterId;
                 user.UpdatedOn = DateTime.Now;
+                user.UpdatedBy = updaterId;
 
                 await _userRepository.Update(user);
-                return true;
+
+                return message;
             }
             catch (MongoException e)
             {
-                return false;
+                return e.Message;
             }
         }
 
@@ -417,8 +420,159 @@ namespace Talent.Services.Profile.Domain.Services
         #endregion
 
         #region Conversion Methods
+        protected async Task<UserLanguage> GetUserLanguage(string id = "", string userId = "", string languageName = "")
+        {
+            UserLanguage language = null;
+            if (!String.IsNullOrWhiteSpace(id))
+            {
+                language = (await _userLanguageRepository.Get(x => x.Id == id)).Single();
+            }
+            
+            if (language == null && !String.IsNullOrWhiteSpace(userId) && !String.IsNullOrWhiteSpace(languageName))
+            {
+                language = (await _userLanguageRepository.Get(x => x.UserId == userId && x.Language == languageName)).Single();
+            }
+
+            if (language == null)
+            {
+                language = new UserLanguage { Id = ObjectId.GenerateNewId().ToString() };
+            }
+
+            return language;
+        }
+
+        protected async Task<UserSkill> GetUserSkill(string id = "", string userId = "", string skillName = "")
+        {
+            UserSkill skill = null;
+            if (!String.IsNullOrWhiteSpace(id))
+            {
+                skill = (await _userSkillRepository.Get(x => x.Id == id)).Single();
+            }
+            if (skill == null && !String.IsNullOrWhiteSpace(userId) && !String.IsNullOrWhiteSpace(skillName))
+            {
+                skill = (await _userSkillRepository.Get(x => x.UserId == userId && x.Skill == skillName)).Single();
+            }
+            if (skill == null)
+            {
+                skill = new UserSkill { Id = ObjectId.GenerateNewId().ToString() };
+            }
+            return skill;
+        }
+
+        protected async Task<UserExperience> GetUserExperience(string id = "")
+        {
+            UserExperience experience = null;
+            if (!String.IsNullOrWhiteSpace(id))
+            {
+                experience = (await _userExperienceRepository.Get(x => x.Id == id)).Single();
+            }
+            if (experience == null)
+            {
+                experience = new UserExperience { Id = ObjectId.GenerateNewId().ToString() };
+            }
+            return experience;
+        }
+
 
         #region Update from View
+        protected async Task<string> UpdateTalentLanguagesFromView(User user, TalentProfileViewModel model)
+        {
+            var newLanguages = new List<UserLanguage>();
+            IDictionary<string, bool> languageIds = new Dictionary<string, bool>();
+            IDictionary<string, bool> languageNames = new Dictionary<string, bool>();
+
+            // Add new languages and existing languages
+            foreach (var item in model.Languages)
+            {
+                if (String.IsNullOrWhiteSpace(item.Name)) return "Please enter language name.";
+                if (String.IsNullOrWhiteSpace(item.Level)) return "Please select language level.";
+                if (languageNames[item.Name]) return "Can't save a language which you already have.";
+                var language = await GetUserLanguage(item.Id, item.CurrentUserId, item.Name);
+                language.IsDeleted = false;
+                language.Language = item.Name;
+                language.LanguageLevel = item.Level;
+                newLanguages.Add(language);
+                languageIds.Add(language.Id, true);
+                languageNames.Add(language.Language, true);
+            }
+
+            // Remove deleted languages
+            foreach (var language in user.Languages)
+            {
+                if (!languageIds[language.Id])
+                {
+                    language.IsDeleted = true;
+                    await _userLanguageRepository.Update(language);
+                }
+            }
+            return null;
+        }
+        protected async Task<string> UpdateTalentSkillsFromView(User user, TalentProfileViewModel model)
+        {
+            var newSkills = new List<UserSkill>();
+            IDictionary<string, bool> skillIds = new Dictionary<string, bool>();
+            IDictionary<string, bool> skillNames = new Dictionary<string, bool>();
+
+            // Add new skills and existing skills
+            foreach (var item in model.Skills)
+            {
+                if (String.IsNullOrWhiteSpace(item.Name)) return "Please enter skill name.";
+                if (String.IsNullOrWhiteSpace(item.Level)) return "Please select skill level.";
+                if (skillNames[item.Name]) return "Can't save a skill which you already have.";
+                var skill = await GetUserSkill(item.Id, user.Id, item.Name);
+                skill.IsDeleted = false;
+                skill.ExperienceLevel = item.Level;
+                skill.Skill = item.Name;
+                newSkills.Add(skill);
+                skillIds.Add(skill.Id, true);
+                skillNames.Add(skill.Skill, true);
+            }
+
+            // Remove deleted skills
+            foreach (var skill in user.Skills)
+            {
+                if (!skillIds[skill.Id])
+                {
+                    skill.IsDeleted = true;
+                    await _userSkillRepository.Update(skill);
+                }
+            }
+
+            user.Skills = newSkills;
+            return null;
+        }
+        protected async Task<string> UpdateTalentExperiencesFromView(User user, TalentProfileViewModel model)
+        {
+            var newExperiences = new List<UserExperience>();
+            IDictionary<string, bool> experienceIds = new Dictionary<string, bool>();
+
+            // Add new skills and existing skills
+            foreach (var item in model.Experience)
+            {
+                var experience = await GetUserExperience(item.Id);
+                experience.IsDeleted = false;
+                experience.Company = item.Company;
+                experience.Position = item.Position;
+                experience.Responsibilities = item.Responsibilities;
+                experience.Start = item.Start;
+                experience.End = item.End;
+                newExperiences.Add(experience);
+                experienceIds.Add(experience.Id, true);
+            }
+
+            // Remove deleted skills
+            foreach (var experience in user.Experience)
+            {
+                if (!experienceIds[experience.Id])
+                {
+                    experience.IsDeleted = true;
+                    await _userExperienceRepository.Update(experience);
+                }
+            }
+
+            user.Experience = newExperiences;
+            return null;
+        }
 
         protected void UpdateSkillFromView(AddSkillViewModel model, UserSkill original)
         {

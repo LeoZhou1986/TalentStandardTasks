@@ -15,7 +15,12 @@
 
 *
 !*/
+!/Talent.Common/Models/UserExperience.cs
+
 !/Talent.Services.Profile/Domain/Services/ProfileService.cs
+!/Talent.Services.Profile/Domain/Contracts/IProfileService.cs
+!/Talent.Services.Profile/Controllers/ProfileController.cs
+!/Talent.Services.Profile/Models/Profile/ExperienceViewModel.cs
 
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Profile/SocialMediaLinkedAccount.jsx
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Profile/Location.jsx
