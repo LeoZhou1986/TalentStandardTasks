@@ -1,6 +1,5 @@
 ﻿/* Skill section */
 import React from 'react';
-import Cookies from 'js-cookie';
 import PropTypes from 'prop-types';
 import { EditableTable } from '../Table/EditableTable.jsx';
 import { SingleInput } from '../Form/SingleInput.jsx';
@@ -38,15 +37,19 @@ export default class Skill extends React.Component {
     };
 
     handleAdd(data) {
-        console.log("Add: ", data);
+        var newSkills = [...this.props.skills, data];
+        this.props.updateProfileData({ skills: newSkills });
     };
 
-    handleDelete(data) {
-        console.log("Delete: ", data);
+    handleDelete(index, data) {
+        var newSkills = this.props.skills.filter(value => value.id != data.id);
+        this.props.updateProfileData({ skills: newSkills });
     };
 
-    handleUpdate(data) {
-        console.log("Update: ", data);
+    handleUpdate(index, data) {
+        var newSkills = [...this.props.skills];
+        newSkills[index] = data;
+        this.props.updateProfileData({ skills: newSkills });
     };
   
    render() {
@@ -80,7 +83,6 @@ export class EditSkill extends React.Component {
     constructor(props) {
         super(props);
         let newContact, isEdit, levelError;
-        console.log(props.contact);
         if (props.contact) {
             newContact = Object.assign({}, props.contact);
             isEdit = true;
@@ -100,7 +102,6 @@ export class EditSkill extends React.Component {
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.setNewValue = this.setNewValue.bind(this);
         this.validateField = this.validateField.bind(this);
-        console.log(this.state);
     };
 
     handleInputChange(event) {
