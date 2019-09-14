@@ -21,15 +21,17 @@ export default class Skill extends React.Component {
         this.handleUpdate = this.handleUpdate.bind(this);
     };
 
-    getAddComponent(handleAdd, handleCancel) {
+    getAddComponent(handleAdd, handleCancel, listData) {
         return <EditSkill
+            listData={listData}
             handleConfirm={handleAdd}
             handleCancel={handleCancel}
         />
     };
 
-    getEditComponent(data, handleUpdate, handleCancel) {
+    getEditComponent(data, handleUpdate, handleCancel, skills) {
         return <EditSkill
+            listData={listData}
             contact={data}
             handleConfirm={handleUpdate}
             handleCancel={handleCancel}
@@ -138,6 +140,15 @@ export class EditSkill extends React.Component {
             case 'name':
                 fieldValid = value !== "";
                 formErrors.name = fieldValid ? '' : 'name is required';
+                if (fieldValid && this.props.listData) {
+                    this.props.listData.map((data, index) => {
+                        if (data.name == value
+                            && (this.state.newContact.id == undefined || this.state.newContact.id != data.id)) {
+                            fieldValid = false;
+                            formErrors.name = `Can't save a skill which you already have.`;
+                        }
+                    })
+                }
                 break;
             case "level":
                 fieldValid = value !== "";
