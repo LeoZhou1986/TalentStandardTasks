@@ -26,7 +26,7 @@ SingleInput.propTypes = {
         PropTypes.string,
         PropTypes.number,
         PropTypes.instanceOf(Date)
-    ]).isRequired,
+    ]),
     placeholder: PropTypes.string,
     isError: PropTypes.bool.isRequired
 }
@@ -44,7 +44,7 @@ export class ChildSingleInput extends React.Component {
                 <input
                     type={this.props.inputType}
                     name={this.props.name}
-                    value={this.props.value}
+                    value={this.props.value ? this.props.value : ""}
                     placeholder={this.props.placeholder}
                     maxLength={this.props.maxLength}
                     onChange={this.props.controlFunc}
@@ -62,7 +62,7 @@ ChildSingleInput.propTypes = {
     value: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.number
-    ]).isRequired,
+    ]),
     placeholder: PropTypes.string,
     controlFunc: PropTypes.func.isRequired,
     isError: PropTypes.bool.isRequired,

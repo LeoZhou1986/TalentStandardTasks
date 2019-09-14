@@ -27,6 +27,7 @@
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Profile/SelfIntroduction.jsx
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Profile/Language.jsx
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Profile/Skill.jsx
+!/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Profile/ContactDetail.jsx
 
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Form/Select.jsx
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Form/SingleInput.jsx
