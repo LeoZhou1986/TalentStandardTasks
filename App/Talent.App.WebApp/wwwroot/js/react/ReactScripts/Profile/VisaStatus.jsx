@@ -44,7 +44,9 @@ export default class VisaStatus extends React.Component {
     };
 
     handleChange(e, { value }) {
-        this.props.saveProfileData({ visaStatus: value });
+        if (value != this.props.visaStatus) {
+            this.props.saveProfileData({ visaStatus: value });
+        }
     };
 
     render() {
