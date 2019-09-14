@@ -22,7 +22,7 @@ export default class Language extends React.Component {
         this.handleUpdate = this.handleUpdate.bind(this);
     }
 
-    getAddComponent(languages, handleAdd, handleCancel) {
+    getAddComponent(handleAdd, handleCancel, languages) {
         return <EditLanguage
             languages={languages}
             handleConfirm={handleAdd}
@@ -30,9 +30,10 @@ export default class Language extends React.Component {
             />
     };
 
-    getEditComponent(data, languages, handleUpdate, handleCancel) {
+    getEditComponent(data, handleUpdate, handleCancel, languages) {
         return <EditLanguage
             language={data}
+            languages={languages}
             handleConfirm={handleUpdate}
             handleCancel={handleCancel}
             />;
@@ -141,6 +142,17 @@ export class EditLanguage extends React.Component {
             case 'name':
                 fieldValid = value !== "";
                 formErrors.name = fieldValid ? '' : 'name is required';
+                if (fieldValid && this.props.languages)
+                {
+                    this.props.languages.map((data, index) => {
+                        if (data.name == value
+                            && (this.state.newContact.id == undefined || this.state.newContact.id != data.id))
+                        {
+                            fieldValid = false;
+                            formErrors.name = `Can't save a language which you already have.`;
+                        }
+                    })
+                }
                 break;
             case "level":
                 fieldValid = value !== "";
@@ -214,6 +226,7 @@ EditLanguage.propTypes = {
         id: PropTypes.string,
         name: PropTypes.string,
         level: PropTypes.string,
+        currentUserId: PropTypes.string
     }),
 
     handleConfirm: PropTypes.func.isRequired,   // (data:"Object")
