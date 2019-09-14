@@ -22,13 +22,15 @@ export class EditableTable extends React.Component {
     };
 
     handleDelete(data) {
+        let index = this.state.editRow;
         this.handleCancelEdit();
-        this.props.handleDelete(data);
+        this.props.handleDelete(index, data);
     };
 
     handleUpdate(data) {
+        let index = this.state.editRow;
         this.handleCancelEdit();
-        this.props.handleUpdate(data);
+        this.props.handleUpdate(index, data);
     };
 
     handleCancelAdd() {

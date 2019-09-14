@@ -38,15 +38,19 @@ export default class Language extends React.Component {
     };
 
     handleAdd(data) {
-        console.log("Add: ", data);
+        var newLanguages = [...this.props.languages, data];
+        this.props.updateProfileData({ languages: newLanguages });
     };
 
-    handleDelete(data) {
-        console.log("Delete: ", data);
+    handleDelete(index, data) {
+        var newLanguages = this.props.languages.filter(value => value.id != data.id);
+        this.props.updateProfileData({ languages: newLanguages });
     };
 
-    handleUpdate(data) {
-        console.log("Update: ", data);
+    handleUpdate(index, data) {
+        var newLanguages = [...this.props.languages];
+        newLanguages[index] = data;
+        this.props.updateProfileData({ languages: newLanguages });
     };
 
     render() {
@@ -73,7 +77,8 @@ Language.propTypes = {
         if (typeof propValue[key].id !== "string") return new Error(`Invalid prop '${propFullName}.id' supplied to '${componentName}' . Validation failed.`);
         if (typeof propValue[key].name !== "string") return new Error(`Invalid prop '${propFullName}.name' supplied to '${componentName}' . Validation failed.`);
         if (typeof propValue[key].level !== "string") return new Error(`Invalid prop '${propFullName}.level' supplied to '${componentName}' . Validation failed.`);
-    }).isRequired
+    }).isRequired,
+    updateProfileData: PropTypes.func.isRequired
 };
 
 export class EditLanguage extends React.Component {
