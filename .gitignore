@@ -31,6 +31,7 @@
 
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Form/Select.jsx
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Form/SingleInput.jsx
+!/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Form/DatePicker.jsx
 
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Table/EditableTable.jsx
 
