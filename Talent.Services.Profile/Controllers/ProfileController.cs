@@ -425,17 +425,22 @@ namespace Talent.Services.Profile.Controllers
         {
             string message;
             bool success;
+            TalentProfileViewModel userProfile = null;
             if (ModelState.IsValid)
             {
                 message = await _profileService.UpdateTalentProfile(profile, _userAppContext.CurrentUserId);
                 success = String.IsNullOrEmpty(message);
-                if (success) message = "Update talent profile successful";
+                if (success)
+                {
+                    message = "Update talent profile successful";
+                    userProfile = await _profileService.GetTalentProfile(profile.Id);
+                }
             }
             else{
                 success = false;
                 message = "Some model state values is invalid.";
             }
-            return Json(new { Success = success, Message = message });
+            return Json(new { Success = success, Message = message, Data = userProfile });
         }
 
         [HttpGet("getTalent")]
