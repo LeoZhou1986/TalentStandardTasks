@@ -42,7 +42,11 @@ export class EditableTable extends React.Component {
     };
 
     render() {
-        let addElement = this.state.addNew ? this.props.getAddComponent(this.handleAdd, this.handleCancelAdd) : null;
+        let addElement = this.state.addNew ?
+            this.props.getAddComponent(
+                this.props.rowData,
+                this.handleAdd,
+                this.handleCancelAdd) : null;
         return (
             <div>
                 {addElement}
@@ -74,7 +78,14 @@ export class EditableTable extends React.Component {
                                 row =
                                 <Table.Row key={index}>
                                     <Table.Cell colSpan={this.props.fieldNames.length + 1}>
-                                        {this.props.getEditComponent(data, this.handleUpdate, this.handleCancelEdit)}
+                                        {
+                                            this.props.getEditComponent(
+                                            data,
+                                            this.props.rowData,
+                                            this.handleUpdate,
+                                            this.handleCancelEdit
+                                            )
+                                        }
                                     </Table.Cell>
                                 </Table.Row>
                             } else {

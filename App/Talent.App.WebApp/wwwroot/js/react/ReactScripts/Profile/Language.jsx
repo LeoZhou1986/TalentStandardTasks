@@ -22,14 +22,15 @@ export default class Language extends React.Component {
         this.handleUpdate = this.handleUpdate.bind(this);
     }
 
-    getAddComponent(handleAdd, handleCancel) {
+    getAddComponent(languages, handleAdd, handleCancel) {
         return <EditLanguage
+            languages={languages}
             handleConfirm={handleAdd}
             handleCancel={handleCancel}
             />
     };
 
-    getEditComponent(data, handleUpdate, handleCancel) {
+    getEditComponent(data, languages, handleUpdate, handleCancel) {
         return <EditLanguage
             language={data}
             handleConfirm={handleUpdate}
