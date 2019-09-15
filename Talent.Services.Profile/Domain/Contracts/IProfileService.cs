@@ -19,7 +19,7 @@ namespace Talent.Services.Profile.Domain.Contracts
         Task<IEnumerable<TalentSnapshotViewModel>> GetTalentSnapshotList(IEnumerable<string> ids);
 
         Task<string> UpdateTalentProfile(TalentProfileViewModel profile, String updaterId);
-        Task<bool> UpdateTalentPhoto(string talentId, IFormFile file);
+        Task<string> UpdateTalentPhoto(string talentId, IFormFile file);
 
         Task<bool> AddTalentVideo(string talentId, IFormFile file);
         Task<bool> RemoveTalentVideo(string talentId, string videoName);

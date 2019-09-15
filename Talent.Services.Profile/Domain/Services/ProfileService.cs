@@ -18,9 +18,6 @@ namespace Talent.Services.Profile.Domain.Services
     public class ProfileService : IProfileService
     {
         private readonly IUserAppContext _userAppContext;
-        IRepository<UserLanguage> _userLanguageRepository;
-        IRepository<UserSkill> _userSkillRepository;
-        IRepository<UserExperience> _userExperienceRepository;
         IRepository<User> _userRepository;
         IRepository<Employer> _employerRepository;
         IRepository<Job> _jobRepository;
@@ -29,9 +26,6 @@ namespace Talent.Services.Profile.Domain.Services
 
 
         public ProfileService(IUserAppContext userAppContext,
-                              IRepository<UserLanguage> userLanguageRepository,
-                              IRepository<UserSkill> userSkillRepository,
-                              IRepository<UserExperience> userExperienceRepository,
                               IRepository<User> userRepository,
                               IRepository<Employer> employerRepository,
                               IRepository<Job> jobRepository,
@@ -39,9 +33,6 @@ namespace Talent.Services.Profile.Domain.Services
                               IFileService fileService)
         {
             _userAppContext = userAppContext;
-            _userLanguageRepository = userLanguageRepository;
-            _userSkillRepository = userSkillRepository;
-            _userExperienceRepository = userExperienceRepository;
             _userRepository = userRepository;
             _employerRepository = employerRepository;
             _jobRepository = jobRepository;
@@ -49,11 +40,6 @@ namespace Talent.Services.Profile.Domain.Services
             _fileService = fileService;
         }
 
-        public bool AddNewLanguage(AddLanguageViewModel language)
-        {
-            //Your code here;
-            throw new NotImplementedException();
-        }
 
         public async Task<TalentProfileViewModel> GetTalentProfile(string Id)
         {
@@ -336,10 +322,42 @@ namespace Talent.Services.Profile.Domain.Services
             throw new NotImplementedException();
         }
 
-        public async Task<bool> UpdateTalentPhoto(string talentId, IFormFile file)
+        public async Task<string> UpdateTalentPhoto(string talentId, IFormFile file)
         {
-            //Your code here;
-            throw new NotImplementedException();
+            var fileExtension = Path.GetExtension(file.FileName);
+            List<string> acceptedExtensions = new List<string> { ".jpg", ".png", ".gif", ".jpeg" };
+
+            if (fileExtension != null && !acceptedExtensions.Contains(fileExtension.ToLower()))
+            {
+                return "Unsupport file type: "+ fileExtension;
+            }
+
+            var profile = (await _userRepository.Get(x => x.Id == talentId)).SingleOrDefault();
+
+            if (profile == null)
+            {
+                return "Can't find talent: " + talentId;
+            }
+
+            var newFileName = await _fileService.SaveFile(file, FileType.ProfilePhoto);
+
+            if (!string.IsNullOrWhiteSpace(newFileName))
+            {
+                var oldFileName = profile.ProfilePhoto;
+
+                if (!string.IsNullOrWhiteSpace(oldFileName))
+                {
+                    await _fileService.DeleteFile(oldFileName, FileType.ProfilePhoto);
+                }
+
+                profile.ProfilePhoto = newFileName;
+                profile.ProfilePhotoUrl = await _fileService.GetFileURL(newFileName, FileType.ProfilePhoto);
+
+                await _userRepository.Update(profile);
+                return null;
+            }
+
+            return "Save phote error";
         }
 
         public async Task<bool> AddTalentVideo(string talentId, IFormFile file)
@@ -444,6 +462,7 @@ namespace Talent.Services.Profile.Domain.Services
             user.Languages = newLanguages;
             return null;
         }
+
         protected string UpdateTalentSkillsFromView(User user, TalentProfileViewModel model)
         {
             var newSkills = new List<UserSkill>();
@@ -468,6 +487,7 @@ namespace Talent.Services.Profile.Domain.Services
             user.Skills = newSkills;
             return null;
         }
+
         protected string UpdateTalentExperiencesFromView(User user, TalentProfileViewModel model)
         {
             var newExperiences = new List<UserExperience>();
@@ -541,6 +561,7 @@ namespace Talent.Services.Profile.Domain.Services
                 CertificationYear = certification.CertificationYear
             };
         }
+
         protected ExperienceViewModel ViewModelFromExperience(UserExperience experience)
         {
             return new ExperienceViewModel
@@ -582,6 +603,11 @@ namespace Talent.Services.Profile.Domain.Services
         public async Task<Employer> GetEmployer(string employerId)
         {
             return await _employerRepository.GetByIdAsync(employerId);
+        }
+
+        public bool AddNewLanguage(AddLanguageViewModel language)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 

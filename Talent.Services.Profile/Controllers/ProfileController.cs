@@ -133,102 +133,7 @@ namespace Talent.Services.Profile.Controllers
             }
         }
 
-        [HttpGet("getLanguage")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<IActionResult> GetLanguages()
-        {
-            //Your code here;
-            throw new NotImplementedException();
-
-        }
-
-        [HttpPost("addLanguage")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public ActionResult AddLanguage([FromBody] AddLanguageViewModel language)
-        {
-            //Your code here;
-            throw new NotImplementedException();
-        }
-
-        [HttpPost("updateLanguage")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<ActionResult> UpdateLanguage([FromBody] AddLanguageViewModel language)
-        {
-            //Your code here;
-            throw new NotImplementedException();
-        }
-
-        [HttpPost("deleteLanguage")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<ActionResult> DeleteLanguage([FromBody] AddLanguageViewModel language)
-        {
-            //Your code here;
-            throw new NotImplementedException();
-        }
-
-        [HttpGet("getSkill")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<IActionResult> GetSkills()
-        {
-            //Your code here;
-            throw new NotImplementedException();
-        }
-
-        [HttpPost("addSkill")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public ActionResult AddSkill([FromBody]AddSkillViewModel skill)
-        {
-            //Your code here;
-            throw new NotImplementedException();
-        }
-
-        [HttpPost("updateSkill")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<IActionResult> UpdateSkill([FromBody]AddSkillViewModel skill)
-        {
-            //Your code here;
-            throw new NotImplementedException();
-        }
-
-        [HttpPost("deleteSkill")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<IActionResult> DeleteSkill([FromBody]AddSkillViewModel skill)
-        {
-            //Your code here;
-            throw new NotImplementedException();
-        }
-
-        [HttpGet("getCertification")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<IActionResult> getCertification()
-        {
-            //Your code here;
-            throw new NotImplementedException();
-        }
-
-        [HttpPost("addCertification")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public ActionResult addCertification([FromBody] AddCertificationViewModel certificate)
-        {
-            //Your code here;
-            throw new NotImplementedException();
-        }
-
-        [HttpPost("updateCertification")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<IActionResult> UpdateCertification([FromBody] AddCertificationViewModel certificate)
-        {
-            //Your code here;
-            throw new NotImplementedException();
-        }
-
-        [HttpPost("deleteCertification")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<IActionResult> DeleteCertification([FromBody] AddCertificationViewModel certificate)
-        {
-            //Your code here;
-            throw new NotImplementedException();
-        }
+        
 
         [HttpGet("getProfileImage")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -243,78 +148,28 @@ namespace Talent.Services.Profile.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
         public async Task<ActionResult> UpdateProfilePhoto()
         {
-            //Your code here;
-            throw new NotImplementedException();
+            if (Request.Form.Files == null || Request.Form.Files.Count == 0) 
+            {
+                return Json(new { Success = false, Message = "Missing photo file"});
+            }
+            string talentId = _userAppContext.CurrentUserId;
+            string message = await _profileService.UpdateTalentPhoto(talentId, Request.Form.Files[0]);
+            if (message != null)
+            {
+                return Json(new { Success = false, Message = message });
+            }
+            User profile = (await _userRepository.GetByIdAsync(talentId));
+            var data = new {
+                profilePhoto = profile.ProfilePhoto,
+                profilePhotoUrl = profile.ProfilePhotoUrl
+            };
+            return Json(new {
+                Success = true,
+                Message = "Update profile photo successful",
+                Data = data
+            });
         }
 
-        [HttpPost("updateTalentCV")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<ActionResult> UpdateTalentCV()
-        {
-            IFormFile file = Request.Form.Files[0];
-            //Your code here;
-            throw new NotImplementedException();
-        }
-
-        [HttpPost("updateTalentVideo")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<IActionResult> UpdateTalentVideo()
-        {
-            IFormFile file = Request.Form.Files[0];
-            //Your code here;
-            throw new NotImplementedException();
-        }
-
-        [HttpGet("getInfo")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<IActionResult> GetInfo()
-        {
-            //Your code here;
-            throw new NotImplementedException();
-        }
-
-
-        [HttpPost("addInfo")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<IActionResult> AddInfo([FromBody] DescriptionViewModel pValue)
-        {
-            //Your code here;
-            throw new NotImplementedException();
-        }
-
-        [HttpGet("getEducation")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<IActionResult> GetEducation()
-        {
-            //Your code here;
-            throw new NotImplementedException();
-        }
-
-        [HttpPost("addEducation")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public IActionResult AddEducation([FromBody]AddEducationViewModel model)
-        {
-            //Your code here;
-            throw new NotImplementedException();
-        }
-
-        [HttpPost("updateEducation")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<IActionResult> UpdateEducation([FromBody]AddEducationViewModel model)
-        {
-            //Your code here;
-            throw new NotImplementedException();
-        }
-
-        [HttpPost("deleteEducation")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "talent")]
-        public async Task<IActionResult> DeleteEducation([FromBody] AddEducationViewModel model)
-        {
-            //Your code here;
-            throw new NotImplementedException();
-        }
-
-     
         #endregion
 
         #region EmployerOrRecruiter
