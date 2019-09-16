@@ -32,6 +32,7 @@
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Profile/Experience.jsx
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Profile/VisaStatus.jsx
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Profile/TalentStatus.jsx
+!/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Profile/PhotoUpload.jsx
 
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Form/Select.jsx
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Form/SingleInput.jsx
