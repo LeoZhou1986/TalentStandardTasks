@@ -1,5 +1,6 @@
 ﻿import React from 'react';
 import PropTypes from 'prop-types';
+import { Grid } from 'semantic-ui-react';
 
 export const SingleInput = (props) => {
     let label = props.title ? <label>{props.title}</label> : null;
@@ -72,9 +73,24 @@ ChildSingleInput.propTypes = {
 
 export class CharactersRemaining extends React.Component {
     render() {
-        let characters = this.props.characters ? this.props.characters.length : 0
+        let characters = this.props.characters ? this.props.characters.length : 0;
+        let color;
+        if (characters > this.props.maxLength || characters < this.props.minLength) {
+            color = 'red';
+        } else {
+            color = 'black';
+        }
         return (
-            <div className="floatRight" >Word count : {characters} / {this.props.maxLength}</div>
+            <Grid>
+                <Grid.Row>
+                    <Grid.Column width={13}>
+                        {this.props.description}
+                    </Grid.Column>
+                    <Grid.Column width={3} textAlign='right'>
+                        <label style={{ color: color }}>{characters} / {this.props.maxLength}</label>
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
         )
     }
 }
