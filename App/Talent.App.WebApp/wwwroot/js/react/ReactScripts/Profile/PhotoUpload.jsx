@@ -39,8 +39,6 @@ export default class PhotoUpload extends Component {
     };
 
     handleUploadImage() {
-        console.log("UploadImage: ", this.state);
-
         let data = new FormData();
         data.append('file', this.state.file);
 
@@ -58,6 +56,7 @@ export default class PhotoUpload extends Component {
                 if (res.success) {
                     this.setState(Object.assign({}, this.state, { file: null }));
                     this.props.updateProfileData(res.data);
+                    TalentUtil.notification.show("Update photo successfully", "success", null, null);
                 } else {
                     TalentUtil.notification.show(res.message, "error", null, null);
                 }
@@ -129,3 +128,8 @@ export default class PhotoUpload extends Component {
         )
     }
 }
+
+PhotoUpload.propTypes = {
+    savePhotoUrl: PropTypes.string.isRequired,
+    updateProfileData: PropTypes.func.isRequired,
+};
