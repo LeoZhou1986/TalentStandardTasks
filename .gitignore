@@ -37,6 +37,7 @@
 
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/TalentFeed/FollowingSuggestion.jsx
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/TalentFeed/CompanyProfile.jsx
+!/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/TalentFeed/TalentCard.jsx
 
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Form/Select.jsx
 !/App/Talent.App.WebApp/wwwroot/js/react/ReactScripts/Form/SingleInput.jsx
