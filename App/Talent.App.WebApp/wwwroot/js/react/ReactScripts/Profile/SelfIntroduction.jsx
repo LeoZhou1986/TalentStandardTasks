@@ -1,5 +1,6 @@
 ﻿/* Self introduction section */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Grid, Input, TextArea, Button } from 'semantic-ui-react';
 import { CharactersRemaining } from '../Form/SingleInput.jsx';
 
