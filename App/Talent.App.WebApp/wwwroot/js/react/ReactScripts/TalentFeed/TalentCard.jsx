@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import ReactPlayer from 'react-player';
 import PropTypes from 'prop-types'
-import { Card, Grid, Icon, List, Button, Image } from 'semantic-ui-react'
+import { Card, Grid, Icon, List, Button, Image, Header } from 'semantic-ui-react'
 
 export default class TalentCard extends React.Component {
     constructor(props) {
@@ -27,20 +27,34 @@ export default class TalentCard extends React.Component {
     };
     
     render() {
-        let skills = ["C#"];
-        let talentDetail;
+        let skills = ["C#", "PHP", "Swift", "JavaScript", "ActionScript"];
+        let talentDetail, icons;
         if (this.state.detail) {
             icons = ["video", "file pdf outline", "linkedin", "github"];
             talentDetail = <Grid>
-                    <Grid.Column width={8}>
+                <Grid.Column width={8}>
                     <Image
                         src='https://react.semantic-ui.com/images/avatar/large/matthew.png'
                         wrapped
                     />
-                    </Grid.Column>
-                    <Grid.Column width={8}>
-                        <Icon size='big' name='star' />
-                    </Grid.Column>
+                </Grid.Column>
+                <Grid.Column width={8}>
+                    <Header as='h4'>Talent snapshot</Header>
+                    <p>
+                        <label>CURRENT EMPLOYER</label>
+                        <div>ABC</div>
+                    </p>
+
+                    <p>
+                        <label>VISA STATUS</label>
+                        <div>Citizen</div>
+                    </p>
+
+                    <p>
+                        <label>POSITION</label>
+                        <div>Software Developer</div>
+                    </p>
+                </Grid.Column>
             </Grid>
         } else {
             icons = ["user", "file pdf outline", "linkedin", "github"];
