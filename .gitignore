@@ -16,6 +16,7 @@
 *
 !*/
 !/Talent.Common/Models/UserExperience.cs
+!/Talent.Common/Services/FileService.cs
 
 !/Talent.Services.Profile/Domain/Services/ProfileService.cs
 !/Talent.Services.Profile/Domain/Contracts/IProfileService.cs
