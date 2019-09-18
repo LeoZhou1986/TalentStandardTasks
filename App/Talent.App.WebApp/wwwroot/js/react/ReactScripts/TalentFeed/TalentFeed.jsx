@@ -66,7 +66,7 @@ export default class TalentFeed extends React.Component {
             }.bind(this),
             error: function (res) {
                 TalentUtil.notification.show("Can't fetch talent data: " + res.status, "error", null, null);
-                this.setState({ loadingFeedData: false });
+                this.setState({ hasMoreFeedData: false, loadingFeedData: false });
             }.bind(this)
         }); 
     };
@@ -86,6 +86,21 @@ export default class TalentFeed extends React.Component {
 
     render() {
         console.log("Talent Feed: ", this.state);
+        let talents;
+        if (this.state.feedData.length == 0) {
+            talents = <div><b>There are no talents found for your recruitment company</b></div>;
+        } else {
+            talents = <InfiniteScroll
+                pageStart={0}
+                loadMore={() => this.getTalentSnapshotList(this.state.loadPosition, this.state.loadNumber)}
+                hasMore={this.state.hasMoreFeedData}
+                loader={<div className="loader" key={0}>Loading ...</div>}
+            >
+                {
+                    this.state.feedData.map((value, index) => <TalentCard talent={value} key={index} />)
+                }
+            </InfiniteScroll>
+        }
         return (
             <BodyWrapper reload={this.init} loaderData={this.state.loaderData}>
                 <div className="ui container">
@@ -98,16 +113,7 @@ export default class TalentFeed extends React.Component {
                             </Grid.Column>
                             <Grid.Column width={8}>
                                 <Container>
-                                    <InfiniteScroll
-                                        pageStart={0}
-                                        loadMore={() => this.getTalentSnapshotList(this.state.loadPosition, this.state.loadNumber)}
-                                        hasMore={this.state.hasMoreFeedData}
-                                        loader={<div className="loader" key={0}>Loading ...</div>}
-                                    >
-                                        {
-                                            this.state.feedData.map((value, index) => <TalentCard talent={value} key={index} />)
-                                        }
-                                    </InfiniteScroll>
+                                    {talents}
                                 </Container>
                             </Grid.Column>
                             <Grid.Column width={4}>

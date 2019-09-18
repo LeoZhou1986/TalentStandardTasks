@@ -1,7 +1,8 @@
 ﻿import React from 'react';
 import ReactPlayer from 'react-player';
 import PropTypes from 'prop-types'
-import { Card, Grid, Icon, List, Button, Image, Header } from 'semantic-ui-react'
+import { Card, Grid, Icon, List, Button, Image, Header, Embed } from 'semantic-ui-react'
+
 
 export default class TalentCard extends React.Component {
     constructor(props) {
@@ -10,10 +11,11 @@ export default class TalentCard extends React.Component {
             detail: false
         };
         this.handleClickIcon = this.handleClickIcon.bind(this);
+        this.getIcondState = this.getIcondState.bind(this);
     };
 
     handleClickIcon(name) {
-        console.log("Click Icon: ", name);
+        if (!this.getIcondState(name)) return;
         switch (name) {
             case "user":
                 this.setState({ detail: true });
@@ -21,10 +23,39 @@ export default class TalentCard extends React.Component {
             case "video":
                 this.setState({ detail: false });
                 break;
+            case "linkedin":
+                window.open(this.props.talent.linkedAccounts.linkedIn, "_blank")
+                break;
+            case "github":
+                window.open(this.props.talent.linkedAccounts.github, "_blank")
+                break;
             default:
                 break;
         }
     };
+
+    getIcondState(icon) {
+        switch (icon) {
+            case "file pdf outline":
+                return this.props.talent.cvUrl != ""
+                    && this.props.talent.cvUrl != null
+                    && this.props.talent.cvUrl != undefined
+                break;
+            case "linkedin":
+                return this.props.talent.linkedAccounts.linkedIn != ""
+                    && this.props.talent.linkedAccounts.linkedIn != null
+                    && this.props.talent.linkedAccounts.linkedIn != undefined
+                break; 
+            case "github":
+                return this.props.talent.linkedAccounts.github != ""
+                    && this.props.talent.linkedAccounts.github != null
+                    && this.props.talent.linkedAccounts.github != undefined
+                break;
+            default:
+                return true;
+                break;
+        }
+    }
     
     render() {
         let talentDetail, icons;
@@ -39,17 +70,17 @@ export default class TalentCard extends React.Component {
                 </Grid.Column>
                 <Grid.Column width={8}>
                     <strong>Talent snapshot</strong>
-                    <div className="description">
+                    <div className="field">
                         <div>CURRENT EMPLOYER</div>
                         <div>ABC</div>
                     </div>
-
-                    <div className="description">
+                    <div></div>
+                    <div className="field">
                         <div>VISA STATUS</div>
                         <div>{this.props.talent.visa}</div>
                     </div>
-
-                    <div className="description">
+                    <div></div>
+                    <div className="field">
                         <div>POSITION</div>
                         <div>Software Developer</div>
                     </div>
@@ -57,11 +88,11 @@ export default class TalentCard extends React.Component {
             </Grid>
         } else {
             icons = ["user", "file pdf outline", "linkedin", "github"];
-            talentDetail = <ReactPlayer
-                url='https://vimeo.com/243556536'
-                className='react-player'
-                width='100%'
-                height='100%'
+            let active = this.props.talent.videoUrl != '' && this.props.talent.videoUrl != null && this.props.talent.videoUrl != undefined;
+            talentDetail = <Embed
+                placeholder='https://react.semantic-ui.com/images/wireframe/image.png'
+                active={active}
+                url={this.props.talent.videoUrl}
             />
         }
 
@@ -110,6 +141,7 @@ export default class TalentCard extends React.Component {
                                     <Icon
                                         size='large'
                                         name={value}
+                                        disabled={!this.getIcondState(value)}
                                         onClick={() => this.handleClickIcon(value)}
                                     />
                                 </Grid.Column>)

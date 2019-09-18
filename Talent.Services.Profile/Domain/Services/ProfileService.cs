@@ -392,6 +392,8 @@ namespace Talent.Services.Profile.Domain.Services
             var result = new List<TalentSnapshotViewModel>();
             var videoUrl = "";
             var cvUrl = "";
+            UserExperience experience;
+            TalentSnapshotCurrentEmploymentViewModel employmentViewModel = null;
 
             foreach (var item in talentList)
             {
@@ -401,6 +403,30 @@ namespace Talent.Services.Profile.Domain.Services
                 cvUrl = string.IsNullOrWhiteSpace(item.CvName)
                     ? ""
                     : await _fileService.GetFileURL(item.CvName, FileType.UserCV);
+                experience = null;
+                // Find the lastest job
+                foreach (var exp in item.Experience)
+                {
+                    if (experience == null)
+                    {
+                        experience = exp;
+                    }
+                    else {
+                        if (experience.End < exp.End)
+                        {
+                            experience = exp;
+                        }
+                    }
+                }
+                if (experience != null)
+                {
+                    employmentViewModel = new TalentSnapshotCurrentEmploymentViewModel
+                    {
+                        Componey = experience.Company,
+                        Position = experience.Position
+                    };
+                }
+
                 var newItem = new TalentSnapshotViewModel
                 {
                     Id = item.Id,
@@ -409,10 +435,11 @@ namespace Talent.Services.Profile.Domain.Services
                     VideoUrl = videoUrl,
                     CVUrl = cvUrl,
                     Summary = item.Summary,
-                    CurrentEmployment = "",
+                    CurrentEmployment = employmentViewModel,
                     Visa = item.VisaStatus,
                     Level = "",
-                    Skills = item.Skills.Select(x => x.Skill).ToList()
+                    Skills = item.Skills.Select(x => x.Skill).ToList(),
+                    LinkedAccounts = item.LinkedAccounts
                 };
                 result.Add(newItem);
             }
