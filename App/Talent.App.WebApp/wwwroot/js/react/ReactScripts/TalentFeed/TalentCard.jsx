@@ -27,7 +27,6 @@ export default class TalentCard extends React.Component {
     };
     
     render() {
-        let skills = ["C#", "PHP", "Swift", "JavaScript", "ActionScript"];
         let talentDetail, icons;
         if (this.state.detail) {
             icons = ["video", "file pdf outline", "linkedin", "github"];
@@ -39,21 +38,21 @@ export default class TalentCard extends React.Component {
                     />
                 </Grid.Column>
                 <Grid.Column width={8}>
-                    <Header as='h4'>Talent snapshot</Header>
-                    <p>
-                        <label>CURRENT EMPLOYER</label>
+                    <strong>Talent snapshot</strong>
+                    <div className="description">
+                        <div>CURRENT EMPLOYER</div>
                         <div>ABC</div>
-                    </p>
+                    </div>
 
-                    <p>
-                        <label>VISA STATUS</label>
-                        <div>Citizen</div>
-                    </p>
+                    <div className="description">
+                        <div>VISA STATUS</div>
+                        <div>{this.props.talent.visa}</div>
+                    </div>
 
-                    <p>
-                        <label>POSITION</label>
+                    <div className="description">
+                        <div>POSITION</div>
                         <div>Software Developer</div>
-                    </p>
+                    </div>
                 </Grid.Column>
             </Grid>
         } else {
@@ -65,13 +64,34 @@ export default class TalentCard extends React.Component {
                 height='100%'
             />
         }
+
+        let skills = null;
+        if (this.props.talent.skills && this.props.talent.skills.length) {
+            skills = <Card.Content extra>
+                <List horizontal>
+                    {
+                        this.props.talent.skills.map((value, index) => {
+                            if (value && value != "") {
+                                return <List.Item key={index}>
+                                    <Button basic compact color='blue'>
+                                        {value}
+                                    </Button>
+                                </List.Item>
+                            }
+                        })
+                    }
+                </List>
+            </Card.Content>
+        }
+
+
         return (
             <Card fluid>
                 <Card.Content>
                     <Grid>
                         <Grid.Row>
                             <Grid.Column width={14}>
-                                <Card.Header><b>Ru(Talent)Ng</b></Card.Header>
+                                <Card.Header><b>{this.props.talent.name}</b></Card.Header>
                             </Grid.Column>
                             <Grid.Column width={2} textAlign='left'>
                                 <Icon size='big' name='star' />
@@ -79,16 +99,15 @@ export default class TalentCard extends React.Component {
                         </Grid.Row>
                     </Grid>
                 </Card.Content>
-                <Card.Content extra>
+                <Card.Content>
                     {talentDetail}
                 </Card.Content>
-                <Card.Content extra>
+                <Card.Content>
                     <Grid textAlign='center' columns={4}>
                         <Grid.Row>
                             {
                                 icons.map((value, index) => <Grid.Column key={index}>
                                     <Icon
-                                        color='black'
                                         size='large'
                                         name={value}
                                         onClick={() => this.handleClickIcon(value)}
@@ -98,17 +117,7 @@ export default class TalentCard extends React.Component {
                         </Grid.Row>
                     </Grid>
                 </Card.Content>
-                <Card.Content extra>
-                    <List horizontal>
-                        {
-                            skills.map((value, index) => <List.Item key={index}>
-                                <Button basic compact color='blue'>
-                                    {value}
-                                </Button>
-                            </List.Item>)
-                        }
-                    </List>
-                </Card.Content>
+                {skills}
             </Card>
         )
     }

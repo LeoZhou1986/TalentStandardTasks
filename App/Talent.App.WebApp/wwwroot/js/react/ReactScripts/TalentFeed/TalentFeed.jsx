@@ -19,7 +19,7 @@ export default class TalentFeed extends React.Component {
 
         this.state = {
             loadNumber: 5,
-            loadPosition: 220,
+            loadPosition: 0,
             feedData: [],
             hasMoreFeedData: true,
             watchlist: [],
@@ -105,7 +105,7 @@ export default class TalentFeed extends React.Component {
                                         loader={<div className="loader" key={0}>Loading ...</div>}
                                     >
                                         {
-                                            this.state.feedData.map((value, index) => <TalentCard key={index} />)
+                                            this.state.feedData.map((value, index) => <TalentCard talent={value} key={index} />)
                                         }
                                     </InfiniteScroll>
                                 </Container>
