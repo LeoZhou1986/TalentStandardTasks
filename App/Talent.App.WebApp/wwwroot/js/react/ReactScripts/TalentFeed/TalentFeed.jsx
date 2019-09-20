@@ -15,6 +15,7 @@ export default class TalentFeed extends React.Component {
         let loader = loaderData
         loader.allowedUsers.push("Employer")
         loader.allowedUsers.push("Recruiter")
+        loader.isLoading = false;
 
         this.state = {
             loadNumber: 5,
@@ -30,9 +31,7 @@ export default class TalentFeed extends React.Component {
         this.init = this.init.bind(this);
         this.getTalentSnapshotList = this.getTalentSnapshotList.bind(this);
         this.getTalentSnapshotListError = this.getTalentSnapshotListError.bind(this);
-
         this.getCompanyData = this.getCompanyData.bind(this);
-        this.getCompanyDataError = this.getCompanyDataError.bind(this);
     };
 
     getTalentSnapshotList(position, number) {
@@ -82,10 +81,14 @@ export default class TalentFeed extends React.Component {
     }
 
     getCompanyData() {
+        if (this.state.loaderData.isLoading) return;
+        let loaderData = TalentUtil.deepCopy(this.state.loaderData)
+        loaderData.isLoading = true;
+        this.setState({ loaderData });
         $.ajax({
             url: 'http://localhost:60290/profile/profile/getEmployerProfile',
             headers: {
-                'Authorization': 'Bearer ' + cookies,
+                'Authorization': 'Bearer ' + Cookies.get('talentAuthToken'),
                 'Content-Type': 'application/json'
             },
             type: "GET",
@@ -97,19 +100,21 @@ export default class TalentFeed extends React.Component {
                 } else {
                     TalentUtil.notification.show(res.message, "error", null, null);
                 }
+                let loaderData = TalentUtil.deepCopy(this.state.loaderData)
+                loaderData.isLoading = false;
+                this.setState({ loaderData });
             }.bind(this),
             error: function (res) {
                 TalentUtil.notification.show("Can't fetch company data: " + res.status, "error", null, null);
+                let loaderData = TalentUtil.deepCopy(this.state.loaderData)
+                loaderData.isLoading = false;
+                this.setState({ loaderData });
             }.bind(this)
         });
     }
 
-    getCompanyDataError() {
-
-    }
-
     componentDidMount() {
-        this.init();
+        this.getCompanyData();
         this.getTalentSnapshotList(this.state.loadPosition, this.state.loadNumber);
     };
 
@@ -136,8 +141,8 @@ export default class TalentFeed extends React.Component {
                     <Grid centered>
                         <Grid.Row>
                             <Grid.Column width={4}>
-                                <Container>
-                                    <CompanyProfile/>
+                                <Container loading="true">
+                                    <CompanyProfile companyDetails={this.state.companyDetails}/>
                                 </Container>
                             </Grid.Column>
                             <Grid.Column width={8}>

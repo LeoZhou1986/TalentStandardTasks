@@ -23,7 +23,7 @@ namespace Talent.Services.Profile.Models
 
     public class TalentSnapshotCurrentEmploymentViewModel
     {
-        public string Componey { get; set; }
+        public string Company { get; set; }
         public string Position { get; set; }
     }
 }

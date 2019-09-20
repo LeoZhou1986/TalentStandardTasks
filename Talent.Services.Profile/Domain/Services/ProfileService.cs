@@ -422,7 +422,7 @@ namespace Talent.Services.Profile.Domain.Services
                 {
                     employmentViewModel = new TalentSnapshotCurrentEmploymentViewModel
                     {
-                        Componey = experience.Company,
+                        Company = experience.Company,
                         Position = experience.Position
                     };
                 }

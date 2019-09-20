@@ -59,30 +59,30 @@ export default class TalentCard extends React.Component {
     
     render() {
         let talentDetail, icons;
+        let photoUrl = this.props.talent.photoId ? this.props.talent.photoId : 'https://react.semantic-ui.com/images/avatar/large/matthew.png';
         if (this.state.detail) {
             icons = ["video", "file pdf outline", "linkedin", "github"];
             talentDetail = <Grid>
                 <Grid.Column width={8}>
                     <Image
-                        src='https://react.semantic-ui.com/images/avatar/large/matthew.png'
+                        src={photoUrl}
                         wrapped
                     />
                 </Grid.Column>
                 <Grid.Column width={8}>
-                    <strong>Talent snapshot</strong>
-                    <div className="field">
-                        <div>CURRENT EMPLOYER</div>
-                        <div>ABC</div>
-                    </div>
-                    <div></div>
+                    <div><strong>Talent snapshot</strong></div>
+                    <br />
+                    <div>CURRENT EMPLOYER</div>
+                    <div>{this.props.talent.currentEmployment ? this.props.talent.currentEmployment.company : ""}</div>
+                    <br />
                     <div className="field">
                         <div>VISA STATUS</div>
                         <div>{this.props.talent.visa}</div>
                     </div>
-                    <div></div>
+                    <br />
                     <div className="field">
                         <div>POSITION</div>
-                        <div>Software Developer</div>
+                        <div>{this.props.talent.currentEmployment ? this.props.talent.currentEmployment.position : ""}</div>
                     </div>
                 </Grid.Column>
             </Grid>
