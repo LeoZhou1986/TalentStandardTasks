@@ -1,7 +1,6 @@
 ﻿import React from 'react';
-import ReactDOM from 'react-dom';
 import Cookies from 'js-cookie'
-import { Loader, Grid, Container } from 'semantic-ui-react';
+import { Grid, Container } from 'semantic-ui-react';
 import InfiniteScroll from 'react-infinite-scroller';
 import TalentCard from '../TalentFeed/TalentCard.jsx';
 import CompanyProfile from '../TalentFeed/CompanyProfile.jsx';
@@ -22,13 +21,18 @@ export default class TalentFeed extends React.Component {
             loadPosition: 0,
             feedData: [],
             hasMoreFeedData: true,
-            watchlist: [],
-            loaderData: loader,
             loadingFeedData: false,
-            companyDetails: null
+
+            loaderData: loader,
+            companyDetails: null,
+            watchlist: []
         }
         this.init = this.init.bind(this);
         this.getTalentSnapshotList = this.getTalentSnapshotList.bind(this);
+        this.getTalentSnapshotListError = this.getTalentSnapshotListError.bind(this);
+
+        this.getCompanyData = this.getCompanyData.bind(this);
+        this.getCompanyDataError = this.getCompanyDataError.bind(this);
     };
 
     getTalentSnapshotList(position, number) {
@@ -54,22 +58,22 @@ export default class TalentFeed extends React.Component {
                             loadingFeedData: false
                         });
                     } else {
-                        this.setState({
-                            hasMoreFeedData: false,
-                            loadingFeedData: false
-                        });
+                        this.getTalentSnapshotListError();
                     }
                 } else {
-                    TalentUtil.notification.show(res.message, "error", null, null);
-                    this.setState({ hasMoreFeedData: false, loadingFeedData: false });
+                    this.getTalentSnapshotListError(res.message);
                 }
             }.bind(this),
             error: function (res) {
-                TalentUtil.notification.show("Can't fetch talent data: " + res.status, "error", null, null);
-                this.setState({ hasMoreFeedData: false, loadingFeedData: false });
+                this.getTalentSnapshotListError("Can't fetch talent data: " + res.status);
             }.bind(this)
         }); 
     };
+
+    getTalentSnapshotListError(error = null) {
+        if (error) TalentUtil.notification.show(error, "error", null, null);
+        this.setState({ hasMoreFeedData: false, loadingFeedData: false });
+    }
 
     init() {
         let loaderData = TalentUtil.deepCopy(this.state.loaderData)
@@ -77,9 +81,34 @@ export default class TalentFeed extends React.Component {
         this.setState({ loaderData });//comment this
     }
 
+    getCompanyData() {
+        $.ajax({
+            url: 'http://localhost:60290/profile/profile/getEmployerProfile',
+            headers: {
+                'Authorization': 'Bearer ' + cookies,
+                'Content-Type': 'application/json'
+            },
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (res) {
+                if (res.success && res.employer) {
+                    this.setState({ companyDetails: res.employer });
+                } else {
+                    TalentUtil.notification.show(res.message, "error", null, null);
+                }
+            }.bind(this),
+            error: function (res) {
+                TalentUtil.notification.show("Can't fetch company data: " + res.status, "error", null, null);
+            }.bind(this)
+        });
+    }
+
+    getCompanyDataError() {
+
+    }
+
     componentDidMount() {
-        //http://localhost:60290/profile/profile/getEmployerProfile
-        
         this.init();
         this.getTalentSnapshotList(this.state.loadPosition, this.state.loadNumber);
     };

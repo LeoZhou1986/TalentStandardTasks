@@ -115,7 +115,6 @@ export default class TalentCard extends React.Component {
             </Card.Content>
         }
 
-
         return (
             <Card fluid>
                 <Card.Content>
