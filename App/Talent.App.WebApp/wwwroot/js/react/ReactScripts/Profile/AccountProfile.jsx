@@ -64,7 +64,7 @@ export default class AccountProfile extends React.Component {
     loadData() {
         var cookies = Cookies.get('talentAuthToken');
         $.ajax({
-            url: 'http://localhost:60290/profile/profile/getTalentProfile',
+            url: 'http://talentstandardprofile.azurewebsites.net/profile/profile/getTalentProfile',
             headers: {
                 'Authorization': 'Bearer ' + cookies,
                 'Content-Type': 'application/json'
@@ -94,7 +94,7 @@ export default class AccountProfile extends React.Component {
 
         var cookies = Cookies.get('talentAuthToken');
         $.ajax({
-            url: 'http://localhost:60290/profile/profile/updateTalentProfile',
+            url: 'http://talentstandardprofile.azurewebsites.net/profile/profile/updateTalentProfile',
             headers: {
                 'Authorization': 'Bearer ' + cookies,
                 'Content-Type': 'application/json'
@@ -225,7 +225,7 @@ export default class AccountProfile extends React.Component {
                                             <PhotoUpload
                                                 profilePhotoUrl={this.state.profileData.profilePhotoUrl}
                                                 updateProfileData={this.updateWithoutSave}
-                                                savePhotoUrl='http://localhost:60290/profile/profile/updateProfilePhoto'
+                                                savePhotoUrl='http://talentstandardprofile.azurewebsites.net/profile/profile/updateProfilePhoto'
                                             />
                                         </FormItemWrapper>
                                         

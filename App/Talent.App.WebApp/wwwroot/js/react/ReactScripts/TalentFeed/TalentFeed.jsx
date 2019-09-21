@@ -39,7 +39,7 @@ export default class TalentFeed extends React.Component {
         this.setState({ loadingFeedData: true });
         var cookies = Cookies.get('talentAuthToken');
         $.ajax({
-            url: `http://localhost:60290/profile/profile/getTalent?position=${position}&number=${number}`,
+            url: `http://talentstandardprofile.azurewebsites.net/profile/profile/getTalent?position=${position}&number=${number}`,
             headers: {
                 'Authorization': 'Bearer ' + cookies,
                 'Content-Type': 'application/json'
@@ -86,7 +86,7 @@ export default class TalentFeed extends React.Component {
         loaderData.isLoading = true;
         this.setState({ loaderData });
         $.ajax({
-            url: 'http://localhost:60290/profile/profile/getEmployerProfile',
+            url: 'http://talentstandardprofile.azurewebsites.net/profile/profile/getEmployerProfile',
             headers: {
                 'Authorization': 'Bearer ' + Cookies.get('talentAuthToken'),
                 'Content-Type': 'application/json'

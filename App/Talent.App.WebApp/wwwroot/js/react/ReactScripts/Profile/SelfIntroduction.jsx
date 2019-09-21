@@ -8,8 +8,8 @@ export default class SelfIntroduction extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            summary: props.summary,
-            description: props.description,
+            summary: props.summary ? props.summary:"",
+            description: props.description ? props.description:"",
             formValid: false
         };
         this.handleChange = this.handleChange.bind(this);

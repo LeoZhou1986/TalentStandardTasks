@@ -119,6 +119,7 @@ export default class PhotoUpload extends Component {
                                     onChange={this.handleImageChange}
                                 />
                                 {imageView}
+                                <Photo url={this.state.profilePhotoUrl}/>
                             </Grid.Column>
                         </Grid.Row>
                         {button}
@@ -133,3 +134,20 @@ PhotoUpload.propTypes = {
     savePhotoUrl: PropTypes.string.isRequired,
     updateProfileData: PropTypes.func.isRequired,
 };
+
+export class Photo extends Component {
+
+    constructor(props) {
+        super(props);
+    };
+
+    loadImage(e) {
+        console.log(e.target);
+    }
+    render() {
+        return (
+            <img src={this.props.url} onLoad={this.loadImage} width="100" height="132"/>
+        )
+    }
+}
+
