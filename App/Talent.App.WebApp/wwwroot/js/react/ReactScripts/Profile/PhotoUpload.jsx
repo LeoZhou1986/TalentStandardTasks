@@ -139,14 +139,54 @@ export class Photo extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            sw: 112,
+            sh: 112,
+            left: 0,
+            top:0
+        }
+        this.loadImage = this.loadImage.bind(this);
     };
 
     loadImage(e) {
         console.log(e.target);
+        console.log(e.target.naturalWidth);
+        console.log(e.target.naturalHeight);
+        let nw = e.target.naturalWidth;
+        let nh = e.target.naturalHeight;
+        console.log("natural: ", nw, nh);
+        let dw = 112;
+        let dh = 112;
+        console.log("display: ", dw, dh);
+        let scale = Math.max(dw / nw, dh / nh);
+        let sw = Math.round(nw * scale);
+        let sh = Math.round(nh * scale);
+        let left = Math.round((dw - sw) / 2);
+        let top = Math.round((dh - sh) / 2);
+        console.log("show: ", sw, sh);
+        this.setState({ sw: sw, sh: sh, left: left, top: top });
     }
     render() {
         return (
-            <img src={this.props.url} onLoad={this.loadImage} width="100" height="132"/>
+            <div
+                color='black'
+                style=
+                {{
+                    border: '5px solid black',
+                    width: '112px',
+                    height: '112px'
+                }}
+            >
+                <img
+                    className='ui circular image'
+                    src={this.props.url}
+                    onLoad={this.loadImage}
+                    style=
+                    {{
+                        position: 'absolute'
+                    }}
+                />
+            </div>
         )
     }
 }
